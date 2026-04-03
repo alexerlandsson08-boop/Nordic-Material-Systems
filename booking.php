@@ -149,7 +149,7 @@ if ($nextMonth > 12) {
 </head>
 
 <body>
-    <a href="index.php" class="back-link">&larr; Back to Home</a>
+    <a href="index.php" class="back-link">Back to Home</a>
     
     <h1 style="text-align: center; color: darkgreen;">Book an Appointment</h1>
     
