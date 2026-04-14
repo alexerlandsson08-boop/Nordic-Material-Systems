@@ -8,34 +8,98 @@ function connectToDb() {
 }
 
 /**
- * Retrieves all days in a given month that have at least one booking.
- * Used to visually mark booked dates on the calendar.
+ * Retrieves all days in a given month that are fully booked (all time slots taken).
+ * Used to visually mark completely booked dates on the calendar.
  * @param int $month The month number (1-12)
  * @param int $year The year (4-digit)
- * @return array Array of day numbers (1-31) that have bookings
+ * @return array Array of day numbers (1-31) that are fully booked
  */
 function getBookedDates($month, $year) {
     $db = connectToDb();
-    // Set date range to first day of month (00:00:00) to last day of month (23:59:59)
     $startDate = sprintf('%04d-%02d-01 00:00:00', $year, $month);
     $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
 
-    // Query database for all bookings in the date range
-    $stmt = $db->prepare('SELECT `date-time` AS booking_datetime FROM bookings WHERE `date-time` BETWEEN ? AND ?');
+    // Get all bookings for the month
+    $stmt = $db->prepare('SELECT `date-time` FROM bookings WHERE `date-time` BETWEEN ? AND ?');
     $stmt->bind_param('ss', $startDate, $endDate);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Extract day numbers from results
-    $dates = [];
+    // Group bookings by date
+    $bookingsByDate = [];
     while ($row = $result->fetch_assoc()) {
-        // Convert to day number (1-31) and add to array
-        $dates[] = (int)date('j', strtotime($row['booking_datetime']));
+        $date = date('Y-m-d', strtotime($row['date-time']));
+        $time = date('H:i', strtotime($row['date-time']));
+        if (!isset($bookingsByDate[$date])) {
+            $bookingsByDate[$date] = [];
+        }
+        $bookingsByDate[$date][] = $time;
     }
 
     $stmt->close();
     $db->close();
-    return $dates;
+
+    // Available times for comparison
+    $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
+
+    // Find dates that are fully booked (all time slots taken)
+    $fullyBookedDates = [];
+    foreach ($bookingsByDate as $date => $bookedTimes) {
+        if (count(array_diff($allTimes, $bookedTimes)) === 0) {
+            // All time slots are booked for this date
+            $fullyBookedDates[] = (int)date('j', strtotime($date));
+        }
+    }
+
+    return $fullyBookedDates;
+}
+
+/**
+ * Retrieves all days in a given month that are partially booked (some time slots taken).
+ * Used to visually mark dates with available time slots on the calendar.
+ * @param int $month The month number (1-12)
+ * @param int $year The year (4-digit)
+ * @return array Array of day numbers (1-31) that are partially booked
+ */
+function getPartiallyBookedDates($month, $year) {
+    $db = connectToDb();
+    $startDate = sprintf('%04d-%02d-01 00:00:00', $year, $month);
+    $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
+
+    // Get all bookings for the month
+    $stmt = $db->prepare('SELECT `date-time` FROM bookings WHERE `date-time` BETWEEN ? AND ?');
+    $stmt->bind_param('ss', $startDate, $endDate);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Group bookings by date
+    $bookingsByDate = [];
+    while ($row = $result->fetch_assoc()) {
+        $date = date('Y-m-d', strtotime($row['date-time']));
+        $time = date('H:i', strtotime($row['date-time']));
+        if (!isset($bookingsByDate[$date])) {
+            $bookingsByDate[$date] = [];
+        }
+        $bookingsByDate[$date][] = $time;
+    }
+
+    $stmt->close();
+    $db->close();
+
+    // Available times for comparison
+    $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
+
+    // Find dates that are partially booked (some but not all time slots taken)
+    $partiallyBookedDates = [];
+    foreach ($bookingsByDate as $date => $bookedTimes) {
+        $availableSlots = count(array_diff($allTimes, $bookedTimes));
+        if ($availableSlots > 0 && $availableSlots < count($allTimes)) {
+            // Some time slots are booked but not all
+            $partiallyBookedDates[] = (int)date('j', strtotime($date));
+        }
+    }
+
+    return $partiallyBookedDates;
 }
 
 /**

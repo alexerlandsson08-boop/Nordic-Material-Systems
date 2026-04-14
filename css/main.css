@@ -138,6 +138,11 @@ p {
             color: #d9534f;
         }
         
+        .calendar .partial {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
         .calendar .past {
             background: #f5f5f5;
             color: #999;
