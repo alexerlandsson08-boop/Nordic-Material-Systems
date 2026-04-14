@@ -1,140 +1,111 @@
 <?php
-
-require_once('functions.php');
-// Load installed packages (Composer autoloader)
 require_once 'vendor/autoload.php';
+require_once 'functions.php';
 
-// Load environment variables from .env file
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-// Handle month navigation from URL parameters or default to current month
-$month = isset($_GET['month']) ? (int)$_GET['month'] : date('n');
-$year = isset($_GET['year']) ? (int)$_GET['year'] : date('Y');
+$allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
 
-// Handle booking form submission
+$month = max(1, min(12, (int)($_GET['month'] ?? date('n'))));
+$year = max(1970, (int)($_GET['year'] ?? date('Y')));
+
 $message = '';
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_date'])) {
-    $date = $_POST['book_date'];
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
+$availableTimes = [];
 
-    // Validate form data
-    if (!empty($name) && !empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        // Attempt to book the date
-        if (bookDate($date, $name, $email)) {
-            $message = "<p class='success'>Booking successful for " . date('F j, Y', strtotime($date)) . "!</p>";
-        } else {
-            $message = "<p class='error'>Booking failed. Please try again.</p>";
-        }
-    } else {
-        $message = "<p class='error'>Please provide a valid name and email address.</p>";
-    }
+// If a date is selected, get booked times for that date
+if (isset($_GET['book'])) {
+    $bookedTimes = getBookedTimes($_GET['book']);
+    $availableTimes = array_diff($allTimes, $bookedTimes);
+    $availableTimes = array_values($availableTimes); // Re-index array
 }
 
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && !empty($_POST['book_date'])) {
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $selectedDate = $_POST['book_date'];
+    $selectedTime = $_POST['book_time'] ?? '';
+    
+    if (!in_array($selectedTime, $allTimes, true)) {
+        $message = "<p class='error'>Invalid time selected.</p>";
+    } elseif (empty($availableTimes) || !in_array($selectedTime, $availableTimes, true)) {
+        $message = "<p class='error'>Selected time is no longer available. Please choose another time.</p>";
+    } elseif ($name === '') {
+        $message = "<p class='error'>Please provide a valid company name.</p>";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $message = "<p class='error'>Please provide a valid email address.</p>";
+    } else {
+        $dateTime = substr($selectedDate, 0, 10) . ' ' . $selectedTime . ':00';
+        if (bookDate($dateTime, $name, $email)) {
+            $message = "<p class='success'>Booking successful for " . date('F j, Y \a\t H:i', strtotime($dateTime)) . "!</p>";
+            // Clear the booking form after success
+            header('Location: ?month=' . $month . '&year=' . $year);
+            exit;
+        } else {
+            $message = "<p class='error'>Booking failed. This time may have been taken. Please try another.</p>";
+        }
+    }
+
+
 /**
- * Build HTML calendar for the given month and year
- *
- * @param int $month The month (1-12)
+ * Generates an HTML calendar table for a given month and year.
+ * Shows which dates are today, booked, or in the past.
+ * Available dates are clickable links to select a booking date.
+ * @param int $month The month number (1-12)
  * @param int $year The year (4-digit)
  * @return string HTML table representing the calendar
  */
 function build_calendar($month, $year) {
-    // Days of the week headers
-    $daysOfWeek = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+    // Days of week labels
+    $daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    // Get all booked dates for this month
+    $booked = getBookedDates($month, $year);
+    // Get calendar information for this month
+    $firstDay = date_create("$year-$month-01");
+    $numberDays = (int)$firstDay->format('t');  // Total days in month
+    $monthName = $firstDay->format('F');        // Month name (e.g., "April")
+    $startDay = (int)$firstDay->format('w');    // Day of week the month starts on (0=Sunday)
 
-    // Get all booked dates for this month from database
-    $bookedDates = getBookedDates($month, $year);
-
-    // Calculate first day of month and number of days
-    $firstDayOfMonth = mktime(0, 0, 0, $month, 1, $year);
-    $numberDays = date('t', $firstDayOfMonth);
-    $dateComponents = getdate($firstDayOfMonth);
-    $monthName = $dateComponents['month'];
-    $dayOfWeek = $dateComponents['wday'];
-
-    // Start building the HTML table
-    $calendar = "<table class='calendar'>";
-    $calendar .= "<caption>$monthName $year</caption>";
-    $calendar .= "<tr>";
-
-    // Add day headers
+    $calendar = "<table class='calendar'><caption>$monthName $year</caption><tr>";
     foreach ($daysOfWeek as $day) {
         $calendar .= "<th class='header'>$day</th>";
     }
+    $calendar .= '</tr><tr>' . str_repeat("<td class='empty'></td>", $startDay);
 
-    // Calculate empty cells for days before the first day of month
-    $currentDay = 1;
-    if ($dayOfWeek > 0) {
-        for ($k=0; $k < $dayOfWeek; $k++) {
-            $calendar .= "<td class='empty'></td>";
+    for ($day = 1, $weekDay = $startDay; $day <= $numberDays; $day++, $weekDay++) {
+        if ($weekDay === 7) {
+            $weekDay = 0;
+            $calendar .= '</tr><tr>';
         }
+
+        $dateString = sprintf('%04d-%02d-%02d 00:00:00', $year, $month, $day);
+        $classes = [];
+        if ($dateString === date('Y-m-d 00:00:00')) $classes[] = 'today';
+        if (in_array($day, $booked, true)) $classes[] = 'booked';
+        if (strtotime($dateString) < strtotime(date('Y-m-d 00:00:00'))) $classes[] = 'past';
+        $class = $classes ? ' class="' . implode(' ', $classes) . '"' : '';
+
+        $content = empty($classes)
+            ? "<a href='?month=$month&year=$year&book=" . rawurlencode($dateString) . "' class='book-link'>$day</a>"
+            : $day;
+
+        $calendar .= "<td{$class}>$content</td>";
     }
 
-    // Build calendar rows and cells
-    while ($currentDay <= $numberDays) {
-        // Start new row at the beginning of each week
-        if ($dayOfWeek == 7) {
-            $dayOfWeek = 0;
-            $calendar .= "</tr><tr>";
-        }
-
-        // Create date string for this day
-        $dateString = sprintf('%04d-%02d-%02d', $year, $month, $currentDay);
-        $isPast = strtotime($dateString) < strtotime(date('Y-m-d'));
-        $isBooked = in_array($currentDay, $bookedDates);
-        $isToday = ($currentDay == date('j') && $month == date('n') && $year == date('Y'));
-
-        // Determine CSS classes for this cell
-        $class = '';
-        if ($isToday) $class .= ' today';
-        if ($isBooked) $class .= ' booked';
-        if ($isPast) $class .= ' past';
-
-        // Create the cell content
-        if ($isPast || $isBooked) {
-            // Past or booked dates are not clickable
-            $calendar .= "<td class='$class'>$currentDay</td>";
-        } else {
-            // Available dates are clickable links
-            $calendar .= "<td class='$class'><a href='?month=$month&year=$year&book=" . $dateString . "' class='book-link'>$currentDay</a></td>";
-        }
-
-        $currentDay++;
-        $dayOfWeek++;
-    }
-
-    // Fill remaining cells in the last row
-    if ($dayOfWeek != 7) {
-        for ($k=0; $k < (7 - $dayOfWeek); $k++) {
-            $calendar .= "<td class='empty'></td>";
-        }
-    }
-
-    $calendar .= "</tr>";
+    $calendar .= str_repeat("<td class='empty'></td>", (7 - $weekDay) % 7);
+    $calendar .= '</tr>';
     return $calendar;
 }
 
-// Calculate navigation links for previous/next months
-$prevMonth = $month - 1;
-$prevYear = $year;
-if ($prevMonth < 1) {
-    $prevMonth = 12;
-    $prevYear--;
-}
-
-$nextMonth = $month + 1;
-$nextYear = $year;
-if ($nextMonth > 12) {
-    $nextMonth = 1;
-    $nextYear++;
-}
+$prevMonth = $month === 1 ? 12 : $month - 1;
+$prevYear = $month === 1 ? $year - 1 : $year;
+$nextMonth = $month === 12 ? 1 : $month + 1;
+$nextYear = $month === 12 ? $year + 1 : $year;
 
 ?>
 
-<!-- ===========================================
-     HTML PAGE STRUCTURE
-     =========================================== -->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -143,9 +114,7 @@ if ($nextMonth > 12) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/main.css" rel="stylesheet">
     <title>Book Appointment - Nordic Material Systems</title>
-    <style>
-        
-    </style>
+   
 </head>
 
 <body>
@@ -162,14 +131,41 @@ if ($nextMonth > 12) {
     <?php echo $message; ?>
     
     <?php if (isset($_GET['book'])): ?>
+    
         <div class="booking-form">
             <h3>Book Appointment for <?php echo date('F j, Y', strtotime($_GET['book'])); ?></h3>
-            <form method="post">
-                <input type="hidden" name="book_date" value="<?php echo $_GET['book']; ?>">
-                <input type="text" name="name" placeholder="Company name" required>
-                <input type="email" name="email" placeholder="Company email" required>
-                <button type="submit">Book Appointment</button>
-            </form>
+            
+            <?php if (!empty($availableTimes)): ?>
+                <form method="post">
+                    <input type="hidden" name="book_date" value="<?php echo $_GET['book']; ?>">
+                    
+                    <div>
+                        <label for="book_time">Choose a time:</label>
+                        <select id="book_time" name="book_time" required>
+                            <option value="">-- Select a time --</option>
+                            <?php foreach ($allTimes as $time): ?>
+                                <?php $isBooked = in_array($time, getBookedTimes($_GET['book']), true); ?>
+                                <option value="<?php echo $time; ?>" <?php echo $isBooked ? 'disabled' : ''; ?>>
+                                    <?php echo $time; ?> <?php echo $isBooked ? '(Booked)' : ''; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <input type="text" name="name" placeholder="Company name" required>
+                    </div>
+                    
+                    <div>
+                        <input type="email" name="email" placeholder="Company email" required>
+                    </div>
+                    
+                    <button type="submit">Book Appointment</button>
+                </form>
+            <?php else: ?>
+                <p class="error">No available times for this date. Please select another date.</p>
+                <a href="?month=<?php echo $month; ?>&year=<?php echo $year; ?>">Back to calendar</a>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
     

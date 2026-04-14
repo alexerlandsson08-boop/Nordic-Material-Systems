@@ -1,107 +1,107 @@
 <?php
 /**
- * Common functions for the Nordic Material Systems website
- *
- * This file contains database functions, session management, and booking operations.
- */
-
-session_start();
-
-/**
- * Connect to the MySQL database
- *
- * Uses environment variables for database credentials.
- * Database is hosted on ostrawebb.se
- *
- * @return mysqli Database connection object
+ * Establishes a connection to the MySQL database using credentials from environment variables.
+ * @return mysqli The database connection object
  */
 function connectToDb() {
-    $db = new mysqli('ostrawebb.se', $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_USER']);
-    return $db;
+    return new mysqli('ostrawebb.se', $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_USER']);
 }
 
 /**
- * Check if user is logged in
- *
- * @return bool True if user has an active session
- */
-function isLoggedIn() {
-    return isset($_SESSION['loggedIn']);
-}
-
-/**
- * Create the bookings table if it doesn't exist
- *
- * Table structure:
- * - id: Auto-incrementing primary key
- * - date: The booking date (YYYY-MM-DD format)
- * - name: Customer's full name
- * - email: Customer's email address
- * - created_at: Timestamp when booking was made
- */
-function createBookingsTable() {
-    $db = connectToDb();
-    $sql = "CREATE TABLE IF NOT EXISTS bookings (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        date DATE NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )";
-    $db->query($sql);
-    $db->close();
-}
-
-/**
- * Get all booked dates for a specific month and year
- *
- * @param int $month The month (1-12)
+ * Retrieves all days in a given month that have at least one booking.
+ * Used to visually mark booked dates on the calendar.
+ * @param int $month The month number (1-12)
  * @param int $year The year (4-digit)
- * @return array Array of day numbers (1-31) that are booked
+ * @return array Array of day numbers (1-31) that have bookings
  */
 function getBookedDates($month, $year) {
     $db = connectToDb();
+    // Set date range to first day of month (00:00:00) to last day of month (23:59:59)
+    $startDate = sprintf('%04d-%02d-01 00:00:00', $year, $month);
+    $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
 
-    // Calculate first and last day of the month
-    $startDate = sprintf('%04d-%02d-01', $year, $month);
-    $endDate = date('Y-m-t', strtotime($startDate));
-
-    // Prepare and execute query to get booked dates
-    $stmt = $db->prepare("SELECT date FROM bookings WHERE date BETWEEN ? AND ?");
-    $stmt->bind_param("ss", $startDate, $endDate);
+    // Query database for all bookings in the date range
+    $stmt = $db->prepare('SELECT `date-time` AS booking_datetime FROM bookings WHERE `date-time` BETWEEN ? AND ?');
+    $stmt->bind_param('ss', $startDate, $endDate);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Extract day numbers from the dates
-    $bookedDates = [];
+    // Extract day numbers from results
+    $dates = [];
     while ($row = $result->fetch_assoc()) {
-        $bookedDates[] = date('j', strtotime($row['date']));
+        // Convert to day number (1-31) and add to array
+        $dates[] = (int)date('j', strtotime($row['booking_datetime']));
     }
 
     $stmt->close();
     $db->close();
-    return $bookedDates;
+    return $dates;
 }
 
 /**
- * Book a date for a customer
- *
- * @param string $date The date to book (YYYY-MM-DD format)
- * @param string $name Customer's name
- * @param string $email Customer's email
- * @return bool True if booking was successful, false otherwise
+ * Creates a new booking in the database with date/time, company name, and email.
+ * Prevents double-booking by checking if the time slot is already reserved.
+ * @param string $date The booking date and time (format: "Y-m-d H:i:s")
+ * @param string $name The company name
+ * @param string $email The company email address
+ * @return bool True if booking was successful, false if time slot was already booked or error occurred
  */
 function bookDate($date, $name, $email) {
     $db = connectToDb();
-
-    // Prepare and execute insert statement
-    $stmt = $db->prepare("INSERT INTO bookings (date, name, email) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $date, $name, $email);
-    $result = $stmt->execute();
-
+    
+    // Check if this specific time slot is already booked (prevent double-booking)
+    $checkStmt = $db->prepare('SELECT COUNT(*) as count FROM bookings WHERE `date-time` = ?');
+    $checkStmt->bind_param('s', $date);
+    $checkStmt->execute();
+    $result = $checkStmt->get_result();
+    $row = $result->fetch_assoc();
+    $checkStmt->close();
+    
+    // Return false if time slot is already taken
+    if ($row['count'] > 0) {
+        $db->close();
+        return false;
+    }
+    
+    // Convert date string to proper format and insert booking
+    $dateTime = date('Y-m-d H:i:s', strtotime($date));
+    $stmt = $db->prepare('INSERT INTO bookings (`date-time`, name, email) VALUES (?, ?, ?)');
+    $stmt->bind_param('sss', $dateTime, $name, $email);
+    $ok = $stmt->execute();
     $stmt->close();
     $db->close();
-    return $result;
+    return $ok;
 }
 
-?>
+/**
+ * Retrieves all booked time slots for a specific date.
+ * Used to show which times are unavailable when user selects a date.
+ * @param string $date The date to check (any format acceptable by strtotime)
+ * @return array Array of booked times in "H:i" format (e.g., ['09:00', '10:00'])
+ */
+function getBookedTimes($date) {
+    $db = connectToDb();
+    // Extract just the date portion and create range for entire day
+    $dateOnly = date('Y-m-d', strtotime($date));
+    $startOfDay = $dateOnly . ' 00:00:00';
+    $endOfDay = $dateOnly . ' 23:59:59';
+    
+    // Query all bookings for this specific date
+    $stmt = $db->prepare('SELECT `date-time` FROM bookings WHERE `date-time` BETWEEN ? AND ?');
+    $stmt->bind_param('ss', $startOfDay, $endOfDay);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    // Extract time portion from each booking
+    $bookedTimes = [];
+    while ($row = $result->fetch_assoc()) {
+        $time = date('H:i', strtotime($row['date-time']));
+        $bookedTimes[] = $time;
+    }
+    
+    $stmt->close();
+    $db->close();
+    return $bookedTimes;
+}
+
+
