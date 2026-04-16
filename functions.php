@@ -4,7 +4,8 @@
  * @return mysqli The database connection object
  */
 function connectToDb() {
-    return new mysqli('ostrawebb.se', $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_USER']);
+    $dbName = $_ENV['DB_NAME'] ?? $_ENV['DB_USER'];
+    return new mysqli('ostrawebb.se', $_ENV['DB_USER'], $_ENV['DB_PASS'], $dbName);
 }
 
 /**
@@ -108,9 +109,10 @@ function getPartiallyBookedDates($month, $year) {
  * @param string $date The booking date and time (format: "Y-m-d H:i:s")
  * @param string $name The company name
  * @param string $email The company email address
+ * @param int|null $userId Optional user ID for authenticated bookings
  * @return bool True if booking was successful, false if time slot was already booked or error occurred
  */
-function bookDate($date, $name, $email) {
+function bookDate($date, $name, $email, $userId = null) {
     $db = connectToDb();
     
     // Check if this specific time slot is already booked (prevent double-booking)
@@ -127,10 +129,22 @@ function bookDate($date, $name, $email) {
         return false;
     }
     
-    // Convert date string to proper format and insert booking
     $dateTime = date('Y-m-d H:i:s', strtotime($date));
-    $stmt = $db->prepare('INSERT INTO bookings (`date-time`, name, email) VALUES (?, ?, ?)');
-    $stmt->bind_param('sss', $dateTime, $name, $email);
+    $useUserId = false;
+    if ($userId !== null) {
+        $columnCheck = $db->query("SHOW COLUMNS FROM bookings LIKE 'user_id'");
+        if ($columnCheck && $columnCheck->num_rows > 0) {
+            $useUserId = true;
+        }
+    }
+
+    if ($useUserId) {
+        $stmt = $db->prepare('INSERT INTO bookings (`date-time`, name, email, user_id) VALUES (?, ?, ?, ?)');
+        $stmt->bind_param('sssi', $dateTime, $name, $email, $userId);
+    } else {
+        $stmt = $db->prepare('INSERT INTO bookings (`date-time`, name, email) VALUES (?, ?, ?)');
+        $stmt->bind_param('sss', $dateTime, $name, $email);
+    }
     $ok = $stmt->execute();
     $stmt->close();
     $db->close();

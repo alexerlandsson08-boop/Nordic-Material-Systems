@@ -1,3 +1,4 @@
+/* Base */
 html {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
@@ -6,34 +7,55 @@ html {
 body {
     margin: 0;
     padding: 0;
-    padding-top: 3rem;
     position: relative;
+    background: rgb(255, 255, 255);
 }
 
-.logo{
-    width: 8rem;
+/* Logo */
+.logo {
+    width: 5rem;
     position: absolute;
-    top: 1rem;
+    top: 0.4rem;
     right: 1rem;
+    z-index: 10;
 }
 
+/* Navigation */
 .links {
-    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    font-size: 2rem;
 }
 
 .links a {
+    position: relative;
+    z-index: 1;
     color: darkgreen;
     text-decoration: none;
-    font-size: 2rem;
-    height: 2rem;
-    margin: 2rem;
 }
 
+.links a::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 128, 0, 0.1);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index: -1;
+}
 
+.links a:hover::before {
+    transform: scaleX(1);
+}
 
+/* Paragraph content */
 p {
-    margin: 0.5rem;
-    padding: 0.5rem;
+    margin: 1rem auto;
+    padding: 0 1rem;
+    max-width: 900px;
 }
 
 /* Image Cover Container */
@@ -47,10 +69,11 @@ p {
     justify-content: center;
 }
 
+/* Background image */
 #Big-picture {
     position: absolute;
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
     transition: transform 0.6s ease-in-out;
 }
@@ -75,26 +98,44 @@ p {
     background: rgba(0, 0, 0, 0.5);
 }
 
-/* Title Styling */
-#title {
+/* Title base */
+.title {
     position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 2;
     color: white;
     text-align: center;
-    font-size: 3.5rem;
-    font-weight: 700;
     letter-spacing: 2px;
     margin: 0;
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
     transition: all 0.6s ease-in-out;
-    transform: translateY(0) scale(1);
     cursor: default;
 }
 
-.image-cover:hover #title {
-    transform: translateY(-10px) scale(1.05);
+/* Main title */
+h1.title {
+    top: 40%;
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+/* Subtitle */
+p.title {
+    top: 55%;
+    font-size: 1.5rem;
+    font-weight: 400;
+    max-width: 700px;
+}
+
+/* Hover effect on text */
+.image-cover:hover .title {
+    transform: translate(-50%, -55%) scale(1.05);
     text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.8);
 }
+
+
+
 
 .calendar {
             border-collapse: collapse;

@@ -1,9 +1,23 @@
 <?php
+session_start();
 require_once 'vendor/autoload.php';
 require_once 'functions.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
+
+if (empty($_SESSION['id'])) {
+    $nextUrl = 'booking.php';
+    if (!empty($_SERVER['QUERY_STRING'])) {
+        $nextUrl .= '?' . $_SERVER['QUERY_STRING'];
+    }
+    header('Location: login.php?next=' . urlencode($nextUrl));
+    exit;
+}
+
+$userId = $_SESSION['id'];
+$name = $_SESSION['name'] ?? '';
+$email = $_SESSION['email'] ?? '';
 
 // Available booking times
 $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
@@ -12,36 +26,20 @@ $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
 $month = max(1, min(12, (int)($_GET['month'] ?? date('n'))));
 $year = max(1970, (int)($_GET['year'] ?? date('Y')));
 
-$message = '';
-$availableTimes = [];
-
-// If user clicked a date to book, get available times for that date
-if (isset($_GET['book'])) {
-    $bookedTimes = getBookedTimes($_GET['book']);
-    $availableTimes = array_diff($allTimes, $bookedTimes);
-    $availableTimes = array_values($availableTimes);
-}
+$message = $_SESSION['flash'] ?? '';
+unset($_SESSION['flash']);
 
 // Handle booking form submission
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && !empty($_POST['book_date'])) {
-    $name = trim($_POST['name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
     $selectedDate = $_POST['book_date'];
     $selectedTime = $_POST['book_time'] ?? '';
-    
+
     // Validate inputs
-    if (empty($name)) {
-        $message = "<p class='error'>Please enter a company name.</p>";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $message = "<p class='error'>Please enter a valid email.</p>";
-    } elseif (empty($selectedTime)) {
+    if (empty($selectedTime)) {
         $message = "<p class='error'>Please select a time.</p>";
     } else {
-        // Combine date and time
         $dateTime = date('Y-m-d H:i:s', strtotime($selectedDate . ' ' . $selectedTime));
-        
-        // Try to book
-        if (bookDate($dateTime, $name, $email)) {
+        if (bookDate($dateTime, $name, $email, $userId)) {
             $message = "<p class='success'>✓ Booking confirmed for " . date('F j, Y \a\t H:i', strtotime($dateTime)) . "!</p>";
         } else {
             $message = "<p class='error'>Failed to book - time may have been taken. Try another.</p>";
@@ -126,15 +124,17 @@ $nextYear = $month === 12 ? $year + 1 : $year;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/main.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/images/Screenshot 2026-04-03 20.27.25 (1).png">
-    <title>Nordic Material systems</title>
     <title>Book Appointment - Nordic Material Systems</title>
-   
 </head>
 
 <body>
     <a href="index.php" class="back-link">Back to Home</a>
+    <div class="user-info" style="margin: 10px 0;">
+        Logged in as <strong><?php echo htmlspecialchars($name); ?></strong> | <a href="logout.php">Log out</a>
+    </div>
     
     <h1 style="text-align: center; color: darkgreen;">Book an Appointment</h1>
+    <?php echo $message; ?>
     
     <div class="navigation">
         <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear; ?>">&larr; Previous</a>
@@ -161,9 +161,6 @@ $nextYear = $month === 12 ? $year + 1 : $year;
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
-                    
-                    <input type="text" name="name" placeholder="Company name" required>
-                    <input type="email" name="email" placeholder="Company email" required>
                     <button type="submit">Book Now</button>
                 </form>
             <?php else: ?>

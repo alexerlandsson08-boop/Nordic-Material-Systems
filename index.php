@@ -7,6 +7,8 @@
     <link href="css/main.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/images/Screenshot 2026-04-03 20.27.25 (1).png">
     <title>Nordic Material systems</title>
+    
+
 </head>
 
 <body>
@@ -22,7 +24,8 @@
     <div class="image-cover">
         <img id='Big-picture' src="/images/Image31mars202614_09_39.png" alt="Nordic Material Systems founders">
         <div class="cover-overlay"></div>
-        <h1 id='title'>Nordic Material Systems</h1>
+        <h1 class='title'>Nordic Material Systems</h1>
+        <p class="title">Nordic Material Systems är inte en vision om en perfekt framtid – det är en realistisk, genomförbar lösning på ett konkret problem som finns här och nu.</p>
     </div>
 
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias architecto quas cum fugit eum libero labore explicabo natus beatae blanditiis aperiam magni, laboriosam dignissimos praesentium expedita porro velit saepe maiores.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias architecto quas cum fugit eum libero labore explicabo natus beatae blanditiis aperiam magni, laboriosam dignissimos praesentium expedita porro velit saepe maiores.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias architecto quas cum fugit eum libero labore explicabo natus beatae blanditiis aperiam magni, laboriosam dignissimos praesentium expedita porro velit saepe maiores.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias architecto quas cum fugit eum libero labore explicabo natus beatae blanditiis aperiam magni, laboriosam dignissimos praesentium expedita porro velit saepe maiores.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias architecto quas cum fugit eum libero labore explicabo natus beatae blanditiis aperiam magni, laboriosam dignissimos praesentium expedita porro velit saepe maiores.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias architecto quas cum fugit eum libero labore explicabo natus beatae blanditiis aperiam magni, laboriosam dignissimos praesentium expedita porro velit saepe maiores.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias architecto quas cum fugit eum libero labore explicabo natus beatae blanditiis aperiam magni, laboriosam dignissimos praesentium expedita porro velit saepe maiores.Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias architecto quas cum fugit eum libero labore explicabo natus beatae blanditiis aperiam magni, laboriosam dignissimos praesentium expedita porro velit saepe maiores.</p>
