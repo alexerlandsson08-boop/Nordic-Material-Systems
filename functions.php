@@ -1,20 +1,17 @@
 <?php
+session_start();
+
+
 /**
  * Establishes a connection to the MySQL database using credentials from environment variables.
  * @return mysqli The database connection object
  */
 function connectToDb() {
-    $dbName = $_ENV['DB_NAME'] ?? $_ENV['DB_USER'];
-    return new mysqli('ostrawebb.se', $_ENV['DB_USER'], $_ENV['DB_PASS'], $dbName);
+    $db = new mysqli('ostrawebb.se', 'wsp2526_aleerl', 'sabebimu77', 'wsp2526_aleerl');   
+    return $db;
 }
 
-/**
- * Retrieves all days in a given month that are fully booked (all time slots taken).
- * Used to visually mark completely booked dates on the calendar.
- * @param int $month The month number (1-12)
- * @param int $year The year (4-digit)
- * @return array Array of day numbers (1-31) that are fully booked
- */
+
 function getBookedDates($month, $year) {
     $db = connectToDb();
     $startDate = sprintf('%04d-%02d-01 00:00:00', $year, $month);
@@ -55,13 +52,7 @@ function getBookedDates($month, $year) {
     return $fullyBookedDates;
 }
 
-/**
- * Retrieves all days in a given month that are partially booked (some time slots taken).
- * Used to visually mark dates with available time slots on the calendar.
- * @param int $month The month number (1-12)
- * @param int $year The year (4-digit)
- * @return array Array of day numbers (1-31) that are partially booked
- */
+
 function getPartiallyBookedDates($month, $year) {
     $db = connectToDb();
     $startDate = sprintf('%04d-%02d-01 00:00:00', $year, $month);
@@ -103,15 +94,7 @@ function getPartiallyBookedDates($month, $year) {
     return $partiallyBookedDates;
 }
 
-/**
- * Creates a new booking in the database with date/time, company name, and email.
- * Prevents double-booking by checking if the time slot is already reserved.
- * @param string $date The booking date and time (format: "Y-m-d H:i:s")
- * @param string $name The company name
- * @param string $email The company email address
- * @param int|null $userId Optional user ID for authenticated bookings
- * @return bool True if booking was successful, false if time slot was already booked or error occurred
- */
+
 function bookDate($date, $name, $email, $userId = null) {
     $db = connectToDb();
     
@@ -151,12 +134,7 @@ function bookDate($date, $name, $email, $userId = null) {
     return $ok;
 }
 
-/**
- * Retrieves all booked time slots for a specific date.
- * Used to show which times are unavailable when user selects a date.
- * @param string $date The date to check (any format acceptable by strtotime)
- * @return array Array of booked times in "H:i" format (e.g., ['09:00', '10:00'])
- */
+
 function getBookedTimes($date) {
     $db = connectToDb();
     // Extract just the date portion and create range for entire day

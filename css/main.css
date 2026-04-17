@@ -17,7 +17,6 @@ body {
     position: absolute;
     top: 0.4rem;
     right: 1rem;
-    z-index: 10;
 }
 
 /* Navigation */
@@ -31,7 +30,6 @@ body {
 
 .links a {
     position: relative;
-    z-index: 1;
     color: darkgreen;
     text-decoration: none;
 }
@@ -44,11 +42,10 @@ body {
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s ease;
-    z-index: -1;
 }
 
 .links a:hover::before {
-    transform: scaleX(1);
+    transform: scale(1);
 }
 
 /* Paragraph content */
@@ -134,8 +131,31 @@ p.title {
     text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.8);
 }
 
+.about h1 {
+   display: inline-block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    color: rgb(0, 0, 0);
+    background: linear-gradient(135deg,rgb(255, 255, 255),rgb(255, 255, 255));
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+    transition: background 0.3s ease, transform 0.2s ease;
+    align-items: center;
+}
 
-
+.about p {
+    color: #000000;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 15px auto;
+    max-width: 600px;
+    background: rgba(255,255,255,0.1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    text-align: center;
+}
 
 .calendar {
             border-collapse: collapse;
