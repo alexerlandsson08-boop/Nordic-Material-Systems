@@ -34,7 +34,6 @@ if ( ! password_verify($password, $hashedPassword)) {
     exit();
 }
 
-var_dump($user);
 
 $_SESSION['loggedIn'] = TRUE;
 $_SESSION['email'] = $user['email'];
