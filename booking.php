@@ -115,7 +115,7 @@ $nextYear = $month === 12 ? $year + 1 : $year;
 </head>
 
 <body>
-    <a href="index.php" class="back-link">Back to Home</a>
+    <a href="logout.php" class="back-link">Back to Home</a>
     <div class="user-info" style="margin: 10px 0;">
         Logged in as <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong> <br> <a href="logout.php">Log out</a>
     </div>

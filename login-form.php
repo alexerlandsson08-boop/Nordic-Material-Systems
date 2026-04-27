@@ -38,7 +38,7 @@ if (isset($_SESSION['message-same'])) {
     echo "<p style='color: red;'>" . $_SESSION['message-same'] . "</p>";
     unset($_SESSION['message-same']);
 }
-?>
+?>§
 
 <form action="register.php" method="post">
 
