@@ -13,13 +13,13 @@
 <body>
     <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
 
-    <div class="links">
+    <nav>
         <a href="login-form.php" data-i18n="nav.book-appointment">Boka tid</a>
         <a href="products.php" data-i18n="nav.products">Produkter</a>
         <a href="team.php" data-i18n="nav.team">Team</a>
         <a href="contact.php" data-i18n="nav.contact">Kontakt</a>
-        <button id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')"> EN/SV</button>
-    </div>
+        <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')"> EN/SV</p>
+    </nav>
 
     <div class="image-cover">
         <img id='Big-picture' src="/images/Image31mars202614_09_39.png" alt="Nordic Material Systems founders">

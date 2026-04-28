@@ -22,7 +22,8 @@ $user = $result->fetch_assoc();
 
 
 if ( ! $user) {
-    echo "User not found.";
+    $_SESSION['message'] = "Inlogg hittas ej!";
+    header("Location: login-form.php");
     exit();
 }
 
@@ -30,7 +31,8 @@ $hashedPassword = $user['password'];
 
 
 if ( ! password_verify($password, $hashedPassword)) {
-    echo "Invalid password.";
+    $_SESSION['message'] = "Felaktigt lösenord!";
+    header("Location: login-form.php");
     exit();
 }
 

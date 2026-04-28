@@ -1,3 +1,7 @@
+<?php
+require_once('functions.php');
+?>
+
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -9,19 +13,18 @@
     <script src="translations.js"></script>
 </head>
 <body>
+
+     <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
+
     <a href="index.php" class="back-link" data-i18n="login.back-home">Tillbaka till hem</a>
-    <button id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')" style="position: absolute; top: 10px; right: 10px;">EN/SV</button>
+    <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')" style="position: absolute; top: 10px; right: 10px;">EN/SV</p>
     
-    
+<main>    
    <h1 data-i18n="login.title">Logga in</h1>
-    <?php 
-     if (isset($_SESSION['message'])) {
-    echo "<p style='color: red;'>" . $_SESSION['message'] . "</p>";
-    unset($_SESSION['message']);
-    }
-    ?>
+
     
     
+
     <form action="login.php" method="post" >
  
         <input type="text" name="name" required data-i18n-placeholder="login.company-name" placeholder="Företagsnamn"> 
@@ -30,15 +33,23 @@
 
         <button type="submit" data-i18n="login.submit">Logga in</button>
     </form>
-    
-<h2 data-i18n="register.title">Skapa konto</h2>
 
-<?php
-if (isset($_SESSION['message-same'])) {
+    <?php 
+    if (isset($_SESSION['message'])) {
+    echo "<p style='color: red;'>" . $_SESSION['message'] . "</p>";
+    unset($_SESSION['message']);
+    }
+    
+    if (isset($_SESSION['message-same'])) {
     echo "<p style='color: red;'>" . $_SESSION['message-same'] . "</p>";
     unset($_SESSION['message-same']);
 }
-?>§
+?>
+
+
+<h1 data-i18n="register.title">Skapa konto</h1>
+
+
 
 <form action="register.php" method="post">
 
@@ -53,6 +64,8 @@ if (isset($_SESSION['message-same'])) {
 <button type="submit" data-i18n="register.submit">Registrera konto</button>
 
 </form>
+
+</main>
 
 </body>
 </html>

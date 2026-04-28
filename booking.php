@@ -110,11 +110,15 @@ $nextYear = $month === 12 ? $year + 1 : $year;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/main.css" rel="stylesheet">
+    <script src="translations.js"></script>
     <link rel="icon" type="image/x-icon" href="/images/Screenshot 2026-04-03 20.27.25 (1).png">
     <title>Book Appointment - Nordic Material Systems</title>
 </head>
 
 <body>
+     <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
+    <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')" style="position: absolute; top: 10px; right: 10px;">EN/SV</p>
+
     <a href="logout.php" class="back-link">Back to Home</a>
     <div class="user-info" style="margin: 10px 0;">
         Logged in as <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong> <br> <a href="logout.php">Log out</a>
@@ -143,7 +147,7 @@ $nextYear = $month === 12 ? $year + 1 : $year;
                     <input type="hidden" name="book_date" value="<?php echo $_GET['book']; ?>">
                     
                     <label>Select Time:</label>
-                    <select name="book_time" required>
+                    <select name="book_time">
                         <option value="">Choose time  </option>
                         <?php foreach ($allTimes as $time): ?>
                             <?php if (!in_array($time, $bookedTimes)): ?>

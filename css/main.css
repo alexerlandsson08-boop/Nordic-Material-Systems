@@ -1,7 +1,7 @@
 /* Base */
 html {
     @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
-    font-size: 14px;
+    font-size: 0.875rem;
     font-family: 'IBM Plex Serif', serif;
 }
 
@@ -9,7 +9,7 @@ body {
     margin: 0;
     padding: 0;
     position: relative;
-    background: rgb(255, 255, 255);
+    background-color: white;
 }
 
 /* Logo */
@@ -21,7 +21,7 @@ body {
 }
 
 /* Navigation */
-.links {
+nav {
     display: flex;
     justify-content: center;
     gap: 2rem;
@@ -29,13 +29,13 @@ body {
     font-size: 2rem;
 }
 
-.links a {
+nav a {
     position: relative;
     color: darkgreen;
     text-decoration: none;
 }
 
-.links a::before {
+nav a::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -45,7 +45,7 @@ body {
     transition: transform 0.3s ease;
 }
 
-.links a:hover::before {
+nav a:hover::before {
     transform: scale(1);
 }
 
@@ -161,8 +161,72 @@ p.title {
 }
 
 .about p:hover {
-    transform: translateY(-0.6rem);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.15);
+}
+
+main {
+    padding: 1rem 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+    padding: 0.9rem 1.2rem;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1f7a4d, #2c9b65);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 8px 20px rgba(31, 122, 77, 0.25);
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+button:active {
+    transform: scale(0.98);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+form {
+    align-items: center;
+    margin: auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border: 0.15rem dashed darkgreen;
+}
+
+form:hover {
+    transform: scale(1.03);
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+
+}
+
+
+input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+input:focus {
+    border-color:black;
+    box-shadow: 0 0 0 3px rgba(31,122,77,0.15);
 }
 
 .calendar {
@@ -317,6 +381,7 @@ p.title {
     margin: 20px 0;
     color: darkgreen;
     text-decoration: none;
+    font-size: 1.5rem;
 }
         
 .back-link:hover {
@@ -324,14 +389,15 @@ p.title {
 }
 
 #lang-toggle {
-    width: 5rem;
+    width: 6rem;
     position: absolute;
-    top: 1.5rem;
+    top: 1rem;
     right: 1rem;
     color: darkgreen;
     background-color: transparent;
     border: none;
     margin-right: 6.5rem;
     height: 2rem;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+    cursor: pointer;
 }
