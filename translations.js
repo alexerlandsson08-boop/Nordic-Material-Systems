@@ -19,8 +19,15 @@ const translations = {
         "register.verify-password": "Verify password",
         "register.email": "Email",
         "register.submit": "Register account",
-        "products.title": "Our subscription options"
+        "products.title": "Our subscription options",
+        "Booking.title": "Book an appointment",
+        "Booking.book-for": "Book for",
+        "Booking.choose-time": "Choose time",
+        "Booking.book-now": "Book Now",
+        "Booking.legend": "Green background = Today | Yellow background = Some times available | Red background = Fully booked | Gray = Past dates",
+        "Booking.click-date": "Click on available dates to book an appointment.",
     },
+    
     sv: {
         "nav.book-appointment": "Boka tid",
         "nav.products": "Produkter",
@@ -40,7 +47,13 @@ const translations = {
         "register.verify-password": "Verifiera lösenord",
         "register.email": "E-post",
         "register.submit": "Registrera konto",
-        "products.title": "Våra prenumerationsalternativ"
+        "products.title": "Våra prenumerationsalternativ",
+        "Booking.title": "Boka tid",
+        "Booking.book-for": "Boka för",
+        "Booking.choose-time": "Välj tid",
+        "Booking.book-now": "Boka nu",
+        "Booking.legend": "Grön bakgrund = Idag | Gul bakgrund = Några tider tillgängliga | Röd bakgrund = Fullbokat | Grå = Gånger som passerat",
+        "Booking.click-date": "Klicka på tillgängliga datum för att boka en tid.",
     }
 };
 

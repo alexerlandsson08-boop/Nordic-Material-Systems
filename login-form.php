@@ -1,5 +1,11 @@
 <?php
 require_once('functions.php');
+
+if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
+    header('Location: booking.php');
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -25,8 +31,8 @@ require_once('functions.php');
     
     
 
-    <form action="login.php" method="post" >
- 
+    <form class ="login-form "action="login.php" method="post" >
+
         <input type="text" name="name" required data-i18n-placeholder="login.company-name" placeholder="Företagsnamn"> 
 
         <input type="password" name="password" required data-i18n-placeholder="login.password" placeholder="Lösenord">
@@ -51,7 +57,7 @@ require_once('functions.php');
 
 
 
-<form action="register.php" method="post">
+<form class="login-form" action="register.php" method="post">
 
 <input type="text" name="name" required data-i18n-placeholder="login.company-name" placeholder="Företagsnamn">
 

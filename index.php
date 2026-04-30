@@ -1,3 +1,11 @@
+<?php
+require_once 'functions.php';
+if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
+    echo "Logged in as " . htmlspecialchars($_SESSION['username']) . "<a href='logout.php'>log out</a>.";
+};
+?>
+
+
 <!DOCTYPE html>
 <html lang="sv">
 

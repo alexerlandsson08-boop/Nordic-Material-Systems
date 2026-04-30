@@ -6,7 +6,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 
-// Available booking times
+// Available boboking times
 $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
 
 // Get current month/year from URL or use today
@@ -119,14 +119,14 @@ $nextYear = $month === 12 ? $year + 1 : $year;
      <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
     <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')" style="position: absolute; top: 10px; right: 10px;">EN/SV</p>
 
-    <a href="logout.php" class="back-link">Back to Home</a>
+    <a href="index.php" class="back-link" data-i18n="login.back-home">Tillbaka till hem</a>
     <div class="user-info" style="margin: 10px 0;">
         Logged in as <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong> <br> <a href="logout.php">Log out</a>
     </div>
 
 
     
-    <h1 style="text-align: center; color: darkgreen;">Book an Appointment</h1>
+    <h1 data-i18n="Booking.title" style="text-align: center; color: darkgreen;">Book an Appointment</h1>
     
     <?php echo $message; ?>
     
@@ -139,23 +139,22 @@ $nextYear = $month === 12 ? $year + 1 : $year;
     
     <?php if (isset($_GET['book'])): ?>
         <div class="booking-form">
-            <h3>Book for <?php echo date('F j, Y', strtotime($_GET['book'])); ?></h3>
+            <h3><span data-i18n="Booking.book-for">Book for</span> <?php echo date('F j, Y', strtotime($_GET['book'])); ?></h3>
             
             <?php $bookedTimes = getBookedTimes($_GET['book']); ?>
             <?php if (count($bookedTimes) < count($allTimes)): ?>
                 <form method="post">
                     <input type="hidden" name="book_date" value="<?php echo $_GET['book']; ?>">
-                    
-                    <label>Select Time:</label>
                     <select name="book_time">
-                        <option value="">Choose time  </option>
+                        <option data-i18n="Booking.choose-time">Choose time</option>
+
                         <?php foreach ($allTimes as $time): ?>
                             <?php if (!in_array($time, $bookedTimes)): ?>
                                 <option value="<?php echo $time; ?>"><?php echo $time; ?></option>
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
-                    <button type="submit">Book Now</button>
+                    <button type="submit" data-i18n="Booking.book-now">Book Now</button>
                 </form>
             <?php else: ?>
                 <p style="color: red;">All times booked for this date.</p>
@@ -167,8 +166,8 @@ $nextYear = $month === 12 ? $year + 1 : $year;
     <?php echo build_calendar($month, $year); ?>
     
     <div style="text-align: center; margin: 20px; color: #666;">
-        <p>Green background = Today | Yellow background = Some times available | Red background = Fully booked | Gray = Past dates</p>
-        <p>Click on available dates to book an appointment.</p>
+        <p data-i18n="Booking.legend">Green background = Today | Yellow background = Some times available | Red background = Fully booked | Gray = Past dates</p>
+        <p data-i18n="Booking.click-date">Click on available dates to book an appointment.</p>
     </div>
 </body>
 </html>
