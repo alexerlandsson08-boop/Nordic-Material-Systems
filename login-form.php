@@ -1,6 +1,11 @@
 <?php
 require_once('functions.php');
 
+$selectedPlan = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plan'])) {
+    $selectedPlan = $_POST['plan'];
+}
+
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
     header('Location: booking.php');
     exit();
@@ -32,7 +37,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
     
 
     <form class ="login-form "action="login.php" method="post" >
-
+        <input type="hidden" name="plan" value="<?php echo htmlspecialchars($selectedPlan); ?>">
         <input type="text" name="name" required data-i18n-placeholder="login.company-name" placeholder="Företagsnamn"> 
 
         <input type="password" name="password" required data-i18n-placeholder="login.password" placeholder="Lösenord">
@@ -58,6 +63,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
 
 
 <form class="login-form" action="register.php" method="post">
+    <input type="hidden" name="plan" value="<?php echo htmlspecialchars($selectedPlan); ?>">
 
 <input type="text" name="name" required data-i18n-placeholder="login.company-name" placeholder="Företagsnamn">
 

@@ -413,3 +413,104 @@ input:focus {
     font-size: 1.5rem;
     cursor: pointer;
 }
+ 
+.product h2{
+color: darkgreen;
+font-weight: normal;
+font-size: 1.5rem;
+font-family: sans-serif;
+
+}
+
+.product li{
+color: #000000;
+font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.product span{
+color: #000000;
+}
+
+.products-page {
+    padding: 3rem 1.5rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pricing-container {
+    overflow-x: auto;
+    margin-top: 2rem;
+}
+
+.pricing-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    min-width: 720px;
+}
+
+.pricing-table th,
+.pricing-table td {
+    padding: 1.25rem 1rem;
+    border: 1px solid #e6e6e6;
+    text-align: left;
+    vertical-align: top;
+}
+
+.pricing-table thead th {
+    background: rgba(31, 122, 77, 0.08);
+    color: darkgreen;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.pricing-table tbody th {
+    background: #f9faf7;
+    color: #1c3a2d;
+    width: 18%;
+}
+
+.pricing-table td {
+    color: #222;
+    font-size: 0.98rem;
+    line-height: 1.5;
+}
+
+.pricing-table tr.plan-actions td {
+    background: #f7fff7;
+    text-align: center;
+}
+
+.pricing-table button {
+    width: 100%;
+    padding: 0.95rem 1rem;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #1f7a4d, #2c9b65);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pricing-table button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 20px rgba(31, 122, 77, 0.18);
+}
+
+.back-link {
+    margin: 1rem auto 0;
+    display: inline-block;
+    text-align: center;
+    color: darkgreen;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}

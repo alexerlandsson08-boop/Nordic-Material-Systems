@@ -124,8 +124,6 @@ $nextYear = $month === 12 ? $year + 1 : $year;
         Logged in as <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong> <br> <a href="logout.php">Log out</a>
     </div>
 
-
-    
     <h1 data-i18n="Booking.title" style="text-align: center; color: darkgreen;">Book an Appointment</h1>
     
     <?php echo $message; ?>
