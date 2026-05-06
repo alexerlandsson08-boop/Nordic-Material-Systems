@@ -1,171 +1,188 @@
 <?php
-require_once 'vendor/autoload.php';
 require_once 'functions.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
-
-// Available boboking times
+// Tider som går att boka
 $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
 
-// Get current month/year from URL or use today
-$month = max(1, min(12, (int)($_GET['month'] ?? date('n'))));
-$year = max(1970, (int)($_GET['year'] ?? date('Y')));
+// Hämta månad och år
+$month = isset($_GET['month']) ? (int)$_GET['month'] : date('n');
+$year  = isset($_GET['year'])  ? (int)$_GET['year']  : date('Y');
 
-$message = $_SESSION['flash'] ?? '';
-unset($_SESSION['flash']);
+$message = "";
 
-// Handle booking form submission
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && !empty($_POST['book_date'])) {
-    $selectedDate = $_POST['book_date'];
-    $selectedTime = $_POST['book_time'] ?? '';
+// Hantera bokning
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_date'])) {
 
-    // Validate inputs
-    if (empty($selectedTime)) {
-        $message = "<p class='error'>Please select a time.</p>";
+    $date = $_POST['book_date'];
+    $time = $_POST['book_time'];
+
+    if ($time == "") {
+        $message = "<div class='error'>Please select a time.</div>";
     } else {
-        $dateTime = date('Y-m-d H:i:s', strtotime($selectedDate . ' ' . $selectedTime));
+        $dateTime = $date . " " . $time;
+
         if (bookDate($dateTime, $_SESSION['username'], $_SESSION['email'])) {
-    $message = "<p class='success'>✓ Booking confirmed for " . date('F j, Y \a\t H:i', strtotime($dateTime)) . "!</p>";
-} else {
-    $message = "<p class='error'>Failed to book - time may have been taken. Try another.</p>";
-}
+            $message = "<div class='success'>Booking confirmed!</div>";
+        } else {
+            $message = "<div class='error'>Time already booked. Try another.</div>";
+        }
     }
 }
 
-
-// Generate calendar table
+// ===== KALENDER =====
 function build_calendar($month, $year) {
-    $daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    $fullyBooked = getBookedDates($month, $year);
-    
-    // Get partially booked dates (dates with some but not all time slots booked)
-    $partiallyBooked = getPartiallyBookedDates($month, $year);
-    
-    $firstDay = date_create("$year-$month-01");
-    $numberDays = (int)$firstDay->format('t');
-    $monthName = $firstDay->format('F');
-    $startDay = (int)$firstDay->format('w');
 
-    $calendar = "<table class='calendar'><caption>$monthName $year</caption><tr>";
+    $daysOfWeek = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+    $firstDay = mktime(0,0,0,$month,1,$year);
+    $numberDays = date('t',$firstDay);
+    $startDay = date('w',$firstDay);
+
+    $today = date('Y-m-d');
+
+    $calendar = "<table class='calendar'>";
+    $calendar .= "<caption>" . date('F Y', $firstDay) . "</caption>";
+    $calendar .= "<tr>";
+
     foreach ($daysOfWeek as $day) {
         $calendar .= "<th>$day</th>";
     }
-    $calendar .= '</tr><tr>' . str_repeat("<td class='empty'></td>", $startDay);
 
-    for ($day = 1, $weekDay = $startDay; $day <= $numberDays; $day++, $weekDay++) {
-        if ($weekDay === 7) {
-            $weekDay = 0;
-            $calendar .= '</tr><tr>';
-        }
+    $calendar .= "</tr><tr>";
 
-        $dateString = sprintf('%04d-%02d-%02d', $year, $month, $day);
+    // tomma rutor
+    for ($i = 0; $i < $startDay; $i++) {
+        $calendar .= "<td class='empty'></td>";
+    }
+
+    // dagar
+    for ($day = 1; $day <= $numberDays; $day++) {
+
+        $date = sprintf('%04d-%02d-%02d', $year, $month, $day);
         $classes = [];
-        
-        // Mark today
-        if ($dateString === date('Y-m-d')) {
-            $classes[] = 'today';
+
+        if ($date == $today) {
+            $classes[] = "today";
         }
-        // Mark fully booked dates
-        if (in_array($day, $fullyBooked, true)) {
-            $classes[] = 'booked';
+
+        if (strtotime($date) < strtotime($today)) {
+            $classes[] = "past";
         }
-        // Mark partially booked dates
-        if (in_array($day, $partiallyBooked, true)) {
-            $classes[] = 'partial';
-        }
-        // Mark past dates
-        if (strtotime($dateString) < strtotime(date('Y-m-d'))) {
-            $classes[] = 'past';
-        }
-        
-        $class = $classes ? ' class="' . implode(' ', $classes) . '"' : '';
-        
-        if (empty($classes) && strtotime($dateString) >= strtotime(date('Y-m-d'))) {
-            $calendar .= "<td><a href='?month=$month&year=$year&book=$dateString' class='book-link'>$day</a></td>";
-        } elseif (in_array('partial', $classes) && !in_array('past', $classes)) {
-            $calendar .= "<td><a href='?month=$month&year=$year&book=$dateString' class='book-link partial'>$day</a></td>";
+
+        $class = implode(" ", $classes);
+
+        // klickbara datum
+        if (!in_array("past", $classes)) {
+            $calendar .= "<td class='$class'>
+                <a class='book-link' href='?month=$month&year=$year&book=$date'>$day</a>
+            </td>";
         } else {
-            $calendar .= "<td$class>$day</td>";
+            $calendar .= "<td class='$class'>$day</td>";
+        }
+
+        if (($day + $startDay) % 7 == 0) {
+            $calendar .= "</tr><tr>";
         }
     }
 
-    $calendar .= str_repeat("<td class='empty'></td>", (7 - $weekDay) % 7);
-    $calendar .= '</tr></table>';
+    $calendar .= "</tr></table>";
+
     return $calendar;
 }
 
-$prevMonth = $month === 1 ? 12 : $month - 1;
-$prevYear = $month === 1 ? $year - 1 : $year;
-$nextMonth = $month === 12 ? 1 : $month + 1;
-$nextYear = $month === 12 ? $year + 1 : $year;
+// navigering
+$prevMonth = $month - 1;
+$nextMonth = $month + 1;
+$prevYear = $year;
+$nextYear = $year;
+
+if ($month == 1) {
+    $prevMonth = 12;
+    $prevYear--;
+}
+
+if ($month == 12) {
+    $nextMonth = 1;
+    $nextYear++;
+}
 ?>
 
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/main.css" rel="stylesheet">
+    <title>Book Appointment</title>
+    <link rel="stylesheet" href="css/main.css">
     <script src="translations.js"></script>
-    <link rel="icon" type="image/x-icon" href="/images/Screenshot 2026-04-03 20.27.25 (1).png">
-    <title>Book Appointment - Nordic Material Systems</title>
 </head>
 
 <body>
-     <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
-    <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')" style="position: absolute; top: 10px; right: 10px;">EN/SV</p>
 
-    <a href="index.php" class="back-link" data-i18n="login.back-home">Tillbaka till hem</a>
-    <div class="user-info" style="margin: 10px 0;">
-        Logged in as <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong> <br> <a href="logout.php">Log out</a>
-    </div>
+<p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')"> EN/SV</p>
 
-    <h1 data-i18n="Booking.title" style="text-align: center; color: darkgreen;">Book an Appointment</h1>
-    
+<img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="logo">
+
+<a href="index.php" class="back-link" data-i18n="login.back-home" >Back to home</a>
+
+<div class="user-info">
+    Logged in as <strong><?php echo $_SESSION['username']; ?></strong>
+</div>
+
+<h1 style="text-align:center;">Book an Appointment</h1>
+
+<!-- MEDDELANDE -->
+<div class="message">
     <?php echo $message; ?>
-    
-    <div class="navigation">
-        <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear; ?>">&larr; Previous</a>
-        <a href="?month=<?php echo date('n'); ?>&year=<?php echo date('Y'); ?>">Today</a>
-        <a href="?month=<?php echo $nextMonth; ?>&year=<?php echo $nextYear; ?>">Next &rarr;</a>
-    </div>
-    
-    
-    <?php if (isset($_GET['book'])): ?>
-        <div class="booking-form">
-            <h3><span data-i18n="Booking.book-for">Book for</span> <?php echo date('F j, Y', strtotime($_GET['book'])); ?></h3>
-            
-            <?php $bookedTimes = getBookedTimes($_GET['book']); ?>
-            <?php if (count($bookedTimes) < count($allTimes)): ?>
-                <form method="post">
-                    <input type="hidden" name="book_date" value="<?php echo $_GET['book']; ?>">
-                    <select name="book_time">
-                        <option data-i18n="Booking.choose-time">Choose time</option>
+</div>
 
-                        <?php foreach ($allTimes as $time): ?>
-                            <?php if (!in_array($time, $bookedTimes)): ?>
-                                <option value="<?php echo $time; ?>"><?php echo $time; ?></option>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    </select>
-                    <button type="submit" data-i18n="Booking.book-now">Book Now</button>
-                </form>
-            <?php else: ?>
-                <p style="color: red;">All times booked for this date.</p>
-                <a href="?month=<?php echo $month; ?>&year=<?php echo $year; ?>">← Back</a>
-            <?php endif; ?>
-        </div>
+<!-- NAVIGATION -->
+<div class="navigation">
+    <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear; ?>">Previous</a>
+    <a href="?month=<?php echo date('n'); ?>&year=<?php echo date('Y'); ?>">Today</a>
+    <a href="?month=<?php echo $nextMonth; ?>&year=<?php echo $nextYear; ?>">Next</a>
+</div>
+
+<!-- BOOKING FORM -->
+<?php
+if (isset($_GET['book'])) {
+
+    $selectedDate = $_GET['book'];
+    $bookedTimes = getBookedTimes($selectedDate);
+?>
+
+<div class="booking-form">
+    <h3>Book for <?php echo $selectedDate; ?></h3>
+
+    <?php if (count($bookedTimes) < count($allTimes)): ?>
+
+    <form method="post">
+        <input type="hidden" name="book_date" value="<?php echo $selectedDate; ?>">
+
+        <select name="book_time">
+            <option value="">Choose time</option>
+
+            <?php
+            foreach ($allTimes as $time) {
+                if (!in_array($time, $bookedTimes)) {
+                    echo "<option value='$time'>$time</option>";
+                }
+            }
+            ?>
+        </select>
+
+        <button type="submit">Book Now</button>
+    </form>
+
+    <?php else: ?>
+        <p class="error">All times are booked.</p>
     <?php endif; ?>
-    
-    <?php echo build_calendar($month, $year); ?>
-    
-    <div style="text-align: center; margin: 20px; color: #666;">
-        <p data-i18n="Booking.legend">Green background = Today | Yellow background = Some times available | Red background = Fully booked | Gray = Past dates</p>
-        <p data-i18n="Booking.click-date">Click on available dates to book an appointment.</p>
-    </div>
+
+</div>
+
+<?php } ?>
+
+<!-- KALENDER -->
+<?php echo build_calendar($month, $year); ?>
+
 </body>
 </html>
