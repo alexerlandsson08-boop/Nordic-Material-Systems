@@ -126,6 +126,7 @@ p.title {
     max-width: 700px;
 }
 
+
 /* Hover effect on text */
 .image-cover:hover .title {
     transform: translate(-50%, -55%) scale(1.05);
@@ -265,28 +266,12 @@ input:focus {
     background: #82fc98;
     font-weight: bold;
 }
-        
-.calendar .booked {
-    background: #ffe6e6;
-    color: #d9534f;
-}
-        
-.calendar .partial {
-    background: #fff3cd;
-    color: #856404;
-    margin-top: -0.7rem;
-
-}
-        
+             
 .calendar .past {
     background: #f5f5f5;
     color: #999;
 }
         
-.calendar .empty {
-    background: #fafafa;
-    margin-top: -0.7rem;
-}
         
 .book-link {
     display: block;
@@ -386,18 +371,41 @@ input:focus {
     max-width: auto;
 }
         
+/* Back link */
 .back-link {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+
+    padding: 0.8rem 1rem;
+
+    background: #f4f4f4;
+    border-left: 4px solid darkgreen;
+    border-radius: 6px;
+
+    text-decoration: none;
+    color: #222;
+
+    z-index: 1000;
+}
+
+/* User info */
+p.user-info {
     margin: 1rem;
-    display: block;
-    text-align: center;
+    padding: 0.8rem 1rem;
+
+    background: #f4f4f4;
+    border-left: 4px solid darkgreen;
+    border-radius: 6px;
+
+    width: fit-content;
+}
+
+/* Logout link */
+p.user-info a {
+    margin-left: 0.5rem;
     color: darkgreen;
     text-decoration: none;
-    font-size: 1.5rem;
-    
-}
-        
-.back-link:hover {
-    text-decoration: underline;
 }
 
 #lang-toggle {

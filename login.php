@@ -8,7 +8,6 @@ if (!isset($_POST['name']) || !isset($_POST['password'])) {
 }
 
 
-
 $username = $_POST['name'];
 $password = $_POST['password'];
 
@@ -36,14 +35,15 @@ if ( ! password_verify($password, $hashedPassword)) {
     exit();
 }
 
-
+$_SESSION['UserId'] = $user['id'];
 $_SESSION['loggedIn'] = TRUE;
 $_SESSION['email'] = $user['email'];
 $_SESSION['username'] = $user['Cname'];
 
 
 
-header('Location: booking.php');
+header('Location: index.php');
+
 ?>
 
 

@@ -1,8 +1,8 @@
 <?php
 require_once 'functions.php';
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
-    echo "Logged in as " . htmlspecialchars($_SESSION['username']) . "<a href='logout.php'>log out</a>.";
-};
+    echo "<p class='user-info'>" . htmlspecialchars($_SESSION['username']) . "</p>";
+}
 ?>
 
 
@@ -19,6 +19,8 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
 </head>
 
 <body>
+    <a href="logout.php">Logout</a>
+
     <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
 
     <nav>

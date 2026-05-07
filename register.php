@@ -46,8 +46,8 @@ $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 /* Spara användare */
 
 $statement = $db->prepare(
-"INSERT INTO company_logins (Cname,password,email)
-VALUES (?,?,?)"
+"INSERT INTO company_logins (Cname,password,email,Sub_plan)
+VALUES (?,?,?,'free')"
 );
 
 $statement->bind_param(
@@ -66,6 +66,6 @@ $_SESSION['message'] = "Kontot skapades!";
 
 
 
-header("Location:log-in.php");
+header("Location:login.php");
 exit();
 ?>

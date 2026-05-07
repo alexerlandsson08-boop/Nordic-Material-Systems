@@ -1,3 +1,4 @@
+
 // translations.js
 const translations = {
     en: {
@@ -59,6 +60,7 @@ const translations = {
         "Booking.book-now": "Book Now",
         "Booking.legend": "Green background = Today | Yellow background = Some times available | Red background = Fully booked | Gray = Past dates",
         "Booking.click-date": "Click on available dates to book an appointment.",
+        
     },
     
     sv: {

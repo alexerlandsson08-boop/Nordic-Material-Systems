@@ -72,19 +72,19 @@
                     <tr class="plan-actions">
                         <th></th>
                         <td>
-                            <form action="login-form.php" method="post" class="plan-form">
+                            <form action="select-plan.php" method="post" class="plan-form">
                                 <input type="hidden" name="plan" value="basic">
                                 <button type="submit" data-i18n="products.basic.button">Boka möte</button>
                             </form>
                         </td>
                         <td>
-                            <form action="login-form.php" method="post" class="plan-form">
+                            <form action="select-plan.php" method="post" class="plan-form">
                                 <input type="hidden" name="plan" value="standard">
                                 <button type="submit" data-i18n="products.standars.button">Boka möte</button>
                             </form>
                         </td>
                         <td>
-                            <form action="login-form.php" method="post" class="plan-form">
+                            <form action="select-plan.php" method="post" class="plan-form">
                                 <input type="hidden" name="plan" value="premium">
                                 <button type="submit" data-i18n="products.premium.button">Boka möte</button>
                             </form>
