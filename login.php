@@ -40,7 +40,11 @@ $_SESSION['loggedIn'] = TRUE;
 $_SESSION['email'] = $user['email'];
 $_SESSION['username'] = $user['Cname'];
 
-
+if ($user['User_type'] === 'admin') {
+    $_SESSION['isAdmin'] = TRUE;
+} else {
+    $_SESSION['isAdmin'] = FALSE;
+}
 
 header('Location: index.php');
 

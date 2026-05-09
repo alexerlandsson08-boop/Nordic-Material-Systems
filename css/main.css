@@ -373,7 +373,7 @@ input:focus {
         
 /* Back link */
 .back-link {
-    position: fixed;
+    position: absolute;
     top: 1rem;
     left: 1rem;
 
@@ -391,6 +391,7 @@ input:focus {
 
 /* User info */
 p.user-info {
+    position: absolute;
     margin: 1rem;
     padding: 0.8rem 1rem;
 
@@ -511,14 +512,28 @@ color: #000000;
 }
 
 .back-link {
-    margin: 1rem auto 0;
-    display: inline-block;
+    margin: 1rem auto;
     text-align: center;
     color: darkgreen;
     text-decoration: none;
     font-size: 1rem;
+    
 }
 
 .back-link:hover {
     text-decoration: underline;
+}
+
+.account-table {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 3rem;
+}
+
+.account-table th,
+.account-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
 }

@@ -16,7 +16,7 @@ $email = $_POST['email'];
 if($password !== $passwordVari){
 
 $_SESSION['message'] = "Lösenorden matchar inte";
-header("Location:log-in.php");
+header("Location:login-form.php");
 exit();
 
 }
@@ -32,7 +32,7 @@ $result = $check->get_result();
 if($result->num_rows > 0){
 
 $_SESSION['message-same'] = "Användarnamnet är redan taget";
-header("Location:log-in.php");
+header("Location:login-form.php");
 exit();
 
 }
@@ -46,8 +46,8 @@ $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 /* Spara användare */
 
 $statement = $db->prepare(
-"INSERT INTO company_logins (Cname,password,email,Sub_plan)
-VALUES (?,?,?,'free')"
+"INSERT INTO company_logins (Cname,password,email,Sub_plan, User_type)
+VALUES (?,?,?,'free','user')"
 );
 
 $statement->bind_param(
@@ -66,6 +66,9 @@ $_SESSION['message'] = "Kontot skapades!";
 
 
 
-header("Location:login.php");
+header("Location:login-form.php");
+
+
+
 exit();
 ?>
