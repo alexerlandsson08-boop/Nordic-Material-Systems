@@ -39,6 +39,7 @@ $_SESSION['UserId'] = $user['id'];
 $_SESSION['loggedIn'] = TRUE;
 $_SESSION['email'] = $user['email'];
 $_SESSION['username'] = $user['Cname'];
+$_SESSION['selectedPlan'] = $user['Sub_plan'];
 
 if ($user['User_type'] === 'admin') {
     $_SESSION['isAdmin'] = TRUE;

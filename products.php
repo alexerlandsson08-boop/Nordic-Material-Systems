@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+require_once 'functions.php';
+
+if (isset($_SESSION['selectedPlan']) && $_SESSION['loggedIn'] === TRUE) {
+    echo "Du har redan ett aktiv prenumerationsplan. Om du vill ändra din prenumeration, vänligen välj ny plan nedan. <br> Vald plan: <strong>" . htmlspecialchars($_SESSION['selectedPlan'])  . "</strong>";
+}
+
+?>
 <html lang="sv">
 <head>
     <meta charset="UTF-8">

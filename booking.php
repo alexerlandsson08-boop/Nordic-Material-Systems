@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_date'])) {
     }
 }
 
-// ===== KALENDER =====
+// Bygg kalender
 function build_calendar($month, $year) {
 
     $daysOfWeek = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -272,10 +272,11 @@ function getBookedTimes($date) {
 
 <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="logo">
 
-<a href="index.php" class="back-link" data-i18n="login.back-home" >Back to home</a>
 
+<div class="user-info-container">
 <p class='user-info'><?php echo htmlspecialchars($_SESSION['username']); ?></p>
-
+<a href="index.php" class="back-link" data-i18n="login.back-home" >Back to home</a>
+</div>
 
 <h1 style="text-align:center;">Book an Appointment</h1>
 

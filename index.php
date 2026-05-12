@@ -1,17 +1,18 @@
 <?php
 require_once 'functions.php';
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
+    echo "<div class='user-info-container'>";
     echo "<p class='user-info'>" . htmlspecialchars($_SESSION['username']) . "</p>";
-    echo "<a href='logout.php'>Logout</a>";
+    echo "<a data-i18n='nav.logout' class='logout-button' href='logout.php'>Logout</a>";
+    echo "</div>";
 }
  if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === TRUE) {
-    echo "<nav><a href='account-management.php'>Manage Accounts</a></nav>";
+    echo "<nav><a href='account-management.php' data-i18n='nav.manage-accounts'>Manage Accounts</a></nav>";
  }
 ?>
 
 
-<!DOCTYPE html>
-<html lang="sv">
+
 
 <head>
     <meta charset="UTF-8">
@@ -30,7 +31,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
     <nav>
         <a href="login-form.php" data-i18n="nav.book-appointment">Boka tid</a>
         <a href="products.php" data-i18n="nav.products">Produkter</a>
-        <a href="team.php" data-i18n="nav.team">Team</a>
+        <a href="team.html" data-i18n="nav.team">Team</a>
         <a href="contact.php" data-i18n="nav.contact">Kontakt</a>
         <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')"> EN/SV</p>
     </nav>

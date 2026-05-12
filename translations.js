@@ -60,7 +60,10 @@ const translations = {
         "Booking.book-now": "Book Now",
         "Booking.legend": "Green background = Today | Yellow background = Some times available | Red background = Fully booked | Gray = Past dates",
         "Booking.click-date": "Click on available dates to book an appointment.",
+        "nav.logout": "Logga ut",
+        "nav.manage-accounts": "Manage accounts",
         
+
     },
     
     sv: {
@@ -122,6 +125,9 @@ const translations = {
         "Booking.book-now": "Boka nu",
         "Booking.legend": "Grön bakgrund = Idag | Gul bakgrund = Några tider tillgängliga | Röd bakgrund = Fullbokat | Grå = Gånger som passerat",
         "Booking.click-date": "Klicka på tillgängliga datum för att boka en tid.",
+        "nav.logout": "Logga ut", 
+        "nav.manage-accounts": "Hantera konton",
+        
     }
 };
 
