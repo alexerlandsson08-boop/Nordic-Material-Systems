@@ -1,15 +1,17 @@
-<?php
-require_once 'functions.php';
-if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
-    echo "<div class='user-info-container'>";
-    echo "<p class='user-info'>" . htmlspecialchars($_SESSION['username']) . "</p>";
-    echo "<a data-i18n='nav.logout' class='logout-button' href='logout.php'>Logout</a>";
-    echo "</div>";
-}
- if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === TRUE) {
-    echo "<nav><a href='account-management.php' data-i18n='nav.manage-accounts'>Manage Accounts</a></nav>";
- }
-?>
+ <?php
+    require_once 'functions.php';
+    if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
+        echo "<div class='user-info-container'>";
+        echo "<p class='user-info'>" . htmlspecialchars($_SESSION['username']) . "</p>";
+        echo "<a data-i18n='nav.logout' class='logout-button' href='logout.php'>Logout</a>";
+        echo "</div>";
+    }
+
+    if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === TRUE) {
+        echo "<a href='account-management.php' data-i18n='nav.manage-accounts'>Manage Accounts</a>";
+    }
+        
+    ?>
 
 
 
