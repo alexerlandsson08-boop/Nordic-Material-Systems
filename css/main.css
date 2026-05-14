@@ -1,13 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 
-/*Root Variables*/
+/*NMS-Färgerr*/
 :root {
     --primary: darkgreen;
-    --primary-dark: #006400;
+    --primary-dark: #007e00;
     --accent: #1f7a4d;
     --accent-light: #2c9b65;
     --text: #222;
-    --border: #ccc;
     --shadow: rgba(0,0,0,0.1);
 }
 
@@ -23,7 +22,6 @@ body {
     background-color: white;
 }
 
-/*Site header*/
 .site-header {
     display: flex;
     align-items: center;
@@ -38,7 +36,7 @@ body {
     
 }
 
-/*Navigation links*/
+/*Navigations länkar*/
 .site-nav {
     display: flex;
     flex-wrap: wrap;
@@ -47,7 +45,7 @@ body {
     font-size: 2rem;
 }
 
-/*Logo + lang toggle*/
+/*Logo + språk knapp*/
 .site-header-right {
     display: flex;
     align-items: center;
@@ -61,7 +59,7 @@ body {
     display: block;
 }
 
-/*Language Toggle*/
+/*Språk knapp*/
 #lang-toggle {
     width: 6rem;
     height: 2rem;
@@ -74,7 +72,8 @@ body {
     padding: 0;
 }
 
-.site-nav a {
+
+.site-nav a, p.user-info {
     margin: 0.4rem 0.75rem;
     position: relative;
     color: var(--primary);
@@ -96,14 +95,14 @@ nav a:hover::before {
     transform: scaleX(1);
 }
 
-/*General Text*/
+/*brödtext*/
 p {
     margin: 1rem auto;
     padding: 0 1rem;
     max-width: 900px;
 }
 
-/*Hero Image Section*/
+/*Laget bild index-sida*/
 .image-cover {
     position: relative;
     width: 100%;
@@ -139,7 +138,7 @@ p {
     background: rgba(0, 0, 0, 0.5);
 }
 
-/*Titles*/
+/*Rubriker*/
 .title {
     position: absolute;
     left: 50%;
@@ -174,7 +173,7 @@ p.title {
     text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.8);
 }
 
-/*About Section*/
+/*Om oss*/
 .about h1 {
     text-align: center;
     color: #000;
@@ -209,22 +208,18 @@ p.title {
 
 /*Main*/
 main {
-    padding: 1rem 3rem;
+    
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/*Buttons*/
+/*Knappar*/
 button {
     padding: 0.9rem 1.2rem;
     border: none;
     border-radius: 10px;
-    background: linear-gradient(
-        135deg,
-        var(--accent),
-        var(--accent-light)
-    );
+    background: linear-gradient(135deg, var(--accent),var(--accent-light));
     color: white;
     font-size: 1rem;
     cursor: pointer;
@@ -241,7 +236,7 @@ button:active {
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/*Forms*/
+/*Formulär*/
 .login-form,
 .booking-form {
     margin: auto;
@@ -276,7 +271,7 @@ input, .booking-form select {
     width: 100%;
     padding: 0.8rem 1rem;
     border-radius: 8px;
-    border: 1px solid var(--border);
+     border: 1px solid var(--primary);
     font-size: 1rem;
     transition: all 0.2s ease;
     box-sizing: border-box;
@@ -293,7 +288,7 @@ input:focus,
     outline: none;
 }
 
-/*Calendar*/
+/*Kalender*/
 .calendar {
     width: 100%;
     max-width: 600px;
@@ -336,7 +331,7 @@ input:focus,
     color: #999;
 }
 
-/*Calendar Links*/
+/*kalender länkar*/
 .book-link {
     display: block;
     width: 100%;
@@ -350,7 +345,7 @@ input:focus,
     background: #e8f4fd;
 }
 
-/*Navigation Buttons*/
+/*Navigations knappar*/
 .navigation {
     text-align: center;
     margin: 20px 0;
@@ -370,7 +365,7 @@ input:focus,
     background: var(--primary-dark);
 }
 
-/*Messages*/
+/*Meddelanden*/
 .message {
     text-align: center;
     margin: 20px 0;
@@ -390,11 +385,11 @@ input:focus,
     border-radius: 4px;
 }
 
-/*Back Link*/
+/*Tillbaka länk*/
 .back-link {
     padding: 0.8rem 1rem;
     background: #f4f4f4;
-    border-left: 4px solid var(--primary);
+    border-right: 4px solid var(--primary);
     border-radius: 6px;
     color: var(--text);
     display: flex;
@@ -406,7 +401,7 @@ input:focus,
     text-decoration: underline;
 }
 
-/*Product Section*/
+/*Produkter*/
 .product h2 {
     color: var(--primary);
     font-weight: normal;
@@ -419,14 +414,14 @@ input:focus,
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-/*Products Page*/
+/*Produkt sidan*/
 .products-page {
     max-width: 1200px;
     margin: 0 auto;
     padding: 3rem 1.5rem 4rem;
 }
 
-/*Pricing Table*/
+/*Pris tabell*/
 .pricing-container {
     overflow-x: auto;
     margin-top: 2rem;
@@ -484,7 +479,7 @@ input:focus,
     box-shadow: 0 12px 20px rgba(31, 122, 77, 0.18);
 }
 
-/*Account Table*/
+/*Konto tabell*/
 .account-table-wrapper {
     overflow-x: auto;
     width: 100%;
@@ -505,7 +500,7 @@ input:focus,
     text-align: left;
 }
 
-/*User Info*/
+/*Användar infon*/
 .user-info-container {
     position: static;
     display: flex;
@@ -570,20 +565,13 @@ input, textarea.contact {
     border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
-    background: linear-gradient(
-        135deg,
-        var(--accent),
-        var(--accent-light)
-    );
+    background: linear-gradient(135deg,var(--accent),var(--accent-light));
 }
 
-/* =====================
-   RESPONSIVE BREAKPOINTS
-   ===================== */
+/*Responsiv design för alla skärmar*/
 
-/* Tablets (~768px) */
+/* ipad ca 768px */
 @media (max-width: 768px) {
-
     .site-nav {
         font-size: 1.3rem;
     }
@@ -650,14 +638,14 @@ input, textarea.contact {
     }
 }
 
-/* Phones (~480px) */
+/*Telefoners ca 480px */
 @media (max-width: 480px) {
 
     html {
         font-size: 0.8rem;
     }
 
-    /* Header stacks: links on top, logo+toggle below */
+    /*Headern läggs på varandra istället för bredvid*/
     .site-header {
         flex-direction: column;
         align-items: center;

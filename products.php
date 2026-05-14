@@ -16,7 +16,7 @@ if (isset($_SESSION['selectedPlan'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NMS-Produkter</title>
     <link href="css/main.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="/images/Screenshot 2026-04-03 20.27.25 (1).png">
+    <link rel="icon" type="image/x-icon" href="/images/logga.webp">
     <script src="translations.js"></script>
 </head>
 <body>
@@ -24,12 +24,12 @@ if (isset($_SESSION['selectedPlan'])) {
 <header class="site-header">
     <div class="user-info-container">
     <p class='user-info'><?php echo htmlspecialchars($_SESSION['username']); ?></p>
-    <a href="index.php" class="back-link" data-i18n="login.back-home">Back to home</a>
+    <a href="index.php" class="back-link" data-i18n="login.back-home">Tillbaka till hem</a>
     </div>
     
     <div class="site-header-right">
         <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')">EN/SV</p>
-        <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
+        <img class="logo" src="/images/logga.webp" alt="NMS, logotype">
     </div>
 </header>
 

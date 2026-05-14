@@ -62,6 +62,7 @@ const translations = {
         "Booking.click-date": "Click on available dates to book an appointment.",
         "nav.logout": "Logga ut",
         "nav.manage-accounts": "Manage accounts",
+        "booking.title": "Book an appointment",
         
 
     },
@@ -127,6 +128,7 @@ const translations = {
         "Booking.click-date": "Klicka på tillgängliga datum för att boka en tid.",
         "nav.logout": "Logga ut", 
         "nav.manage-accounts": "Hantera konton",
+        "booking.title": "Boka en tid",
         
     }
 };

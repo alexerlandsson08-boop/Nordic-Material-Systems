@@ -1,7 +1,7 @@
 <?php
 require_once 'functions.php';
 
-// Tider som går att boka
+// Tider som går att boka från start
 $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
 
 // Hämta månad och år
@@ -90,7 +90,7 @@ function build_calendar($month, $year) {
     return $calendar;
 }
 
-// navigering
+// navigering mellan månader
 $prevMonth = $month - 1;
 $nextMonth = $month + 1;
 $prevYear = $year;
@@ -106,93 +106,12 @@ if ($month == 12) {
     $nextYear++;
 }
 
-function getBookedDates($month, $year) {
-    $db = connectToDb();
-    $startDate = sprintf('%04d-%02d-01 00:00:00', $year, $month);
-    $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
 
-    // Get all bookings for the month
-    $stmt = $db->prepare('SELECT `date-time` FROM bookings WHERE `date-time` BETWEEN ? AND ?');
-    $stmt->bind_param('ss', $startDate, $endDate);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Group bookings by date
-    $bookingsByDate = [];
-    while ($row = $result->fetch_assoc()) {
-        $date = date('Y-m-d', strtotime($row['date-time']));
-        $time = date('H:i', strtotime($row['date-time']));
-        if (!isset($bookingsByDate[$date])) {
-            $bookingsByDate[$date] = [];
-        }
-        $bookingsByDate[$date][] = $time;
-    }
-
-    $stmt->close();
-    $db->close();
-
-    // Available times for comparison
-    $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
-
-    // Find dates that are fully booked (all time slots taken)
-    $fullyBookedDates = [];
-    foreach ($bookingsByDate as $date => $bookedTimes) {
-        if (count(array_diff($allTimes, $bookedTimes)) === 0) {
-            // All time slots are booked for this date
-            $fullyBookedDates[] = (int)date('j', strtotime($date));
-        }
-    }
-
-    return $fullyBookedDates;
-}
-
-
-function getPartiallyBookedDates($month, $year) {
-    $db = connectToDb();
-    $startDate = sprintf('%04d-%02d-01 00:00:00', $year, $month);
-    $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
-
-    // Get all bookings for the month
-    $stmt = $db->prepare('SELECT `date-time` FROM bookings WHERE `date-time` BETWEEN ? AND ?');
-    $stmt->bind_param('ss', $startDate, $endDate);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Group bookings by date
-    $bookingsByDate = [];
-    while ($row = $result->fetch_assoc()) {
-        $date = date('Y-m-d', strtotime($row['date-time']));
-        $time = date('H:i', strtotime($row['date-time']));
-        if (!isset($bookingsByDate[$date])) {
-            $bookingsByDate[$date] = [];
-        }
-        $bookingsByDate[$date][] = $time;
-    }
-
-    $stmt->close();
-    $db->close();
-
-    // Available times for comparison
-    $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
-
-    // Find dates that are partially booked (some but not all time slots taken)
-    $partiallyBookedDates = [];
-    foreach ($bookingsByDate as $date => $bookedTimes) {
-        $availableSlots = count(array_diff($allTimes, $bookedTimes));
-        if ($availableSlots > 0 && $availableSlots < count($allTimes)) {
-            // Some time slots are booked but not all
-            $partiallyBookedDates[] = (int)date('j', strtotime($date));
-        }
-    }
-
-    return $partiallyBookedDates;
-}
-
-
+//Boka in daumn och tid
 function bookDate($date, $name, $email, $userId = null) {
     $db = connectToDb();
     
-    // Check if this specific time slot is already booked (prevent double-booking)
+    // Kolla om tid redan är bokad
     $checkStmt = $db->prepare('SELECT COUNT(*) as count FROM bookings WHERE `date-time` = ?');
     $checkStmt->bind_param('s', $date);
     $checkStmt->execute();
@@ -200,7 +119,7 @@ function bookDate($date, $name, $email, $userId = null) {
     $row = $result->fetch_assoc();
     $checkStmt->close();
     
-    // Return false if time slot is already taken
+    // Returnera false om tiden redan är bokad
     if ($row['count'] > 0) {
         $db->close();
         return false;
@@ -228,21 +147,21 @@ function bookDate($date, $name, $email, $userId = null) {
     return $ok;
 }
 
-
+//visa endast lediga tider
 function getBookedTimes($date) {
     $db = connectToDb();
-    // Extract just the date portion and create range for entire day
+    // Ta ut exakt datum
     $dateOnly = date('Y-m-d', strtotime($date));
     $startOfDay = $dateOnly . ' 00:00:00';
     $endOfDay = $dateOnly . ' 23:59:59';
     
-    // Query all bookings for this specific date
+    // Kolla alla bokningar för det datumet
     $stmt = $db->prepare('SELECT `date-time` FROM bookings WHERE `date-time` BETWEEN ? AND ?');
     $stmt->bind_param('ss', $startOfDay, $endOfDay);
     $stmt->execute();
     $result = $stmt->get_result();
     
-    // Extract time portion from each booking
+    // Hämta alla bokade tider"
     $bookedTimes = [];
     while ($row = $result->fetch_assoc()) {
         $time = date('H:i', strtotime($row['date-time']));
@@ -254,14 +173,13 @@ function getBookedTimes($date) {
     return $bookedTimes;
 }
 
-
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>Book Appointment</title>
+    <title>Boka möte</title>
     <link rel="stylesheet" href="css/main.css">
     <script src="translations.js"></script>
 </head>
@@ -271,28 +189,28 @@ function getBookedTimes($date) {
 <header class="site-header">
     <div class="user-info-container">
     <p class='user-info'><?php echo htmlspecialchars($_SESSION['username']); ?></p>
-    <a href="index.php" class="back-link" data-i18n="login.back-home">Back to home</a>
+    <a href="index.php" class="back-link" data-i18n="login.back-home">Tillbaka till hem</a>
     </div>
     
     <div class="site-header-right">
         <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')">EN/SV</p>
-        <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
+        <img class="logo" src="/images/logga.webp" alt="NMS, logotype">
     </div>
 </header>
 
 
-<h1 style="text-align:center;">Book an Appointment</h1>
+<h1 data-i18n="booking.title" style="text-align:center;">Boka ett möte</h1>
 
-<!-- MEDDELANDE -->
+
 <div class="message">
     <?php echo $message; ?>
 </div>
 
 <!-- NAVIGATION -->
 <div class="navigation">
-    <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear; ?>">Previous</a>
-    <a href="?month=<?php echo date('n'); ?>&year=<?php echo date('Y'); ?>">Today</a>
-    <a href="?month=<?php echo $nextMonth; ?>&year=<?php echo $nextYear; ?>">Next</a>
+    <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear; ?>">Tidigare</a>
+    <a href="?month=<?php echo date('n'); ?>&year=<?php echo date('Y'); ?>">Idag</a>
+    <a href="?month=<?php echo $nextMonth; ?>&year=<?php echo $nextYear; ?>">Nästa</a>
 </div>
 
 <!-- BOOKING FORM -->
@@ -312,7 +230,7 @@ if (isset($_GET['book'])) {
         <input type="hidden" name="book_date" value="<?php echo $selectedDate; ?>">
 
         <select name="book_time">
-            <option value="">Choose time</option>
+            <option value="">Välj tid</option>
 
             <?php
             foreach ($allTimes as $time) {
@@ -323,7 +241,7 @@ if (isset($_GET['book'])) {
             ?>
         </select>
 
-        <button type="submit">Book Now</button>
+        <button type="submit">Boka nu</button>
     </form>
 
     <?php else: ?>

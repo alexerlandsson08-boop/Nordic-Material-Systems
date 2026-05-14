@@ -33,17 +33,17 @@ if (isset($_SESSION['message'])) {
 
 ?>
 
-<html>
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/main.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="/images/Screenshot 2026-04-03 20.27.25 (1).png">
-    <title>Account Management - Nordic Material Systems</title>
+    <link rel="icon" type="image/x-icon" href="/images/logga.webp">
+    <title>Konto hantering - Nordic Material Systems</title>
     <script src="translations.js"></script>
 </head>
 <body>
-    <a href="index.php" data-i18n="login.back-home">Back to home</a>
+    <a href="index.php" data-i18n="login.back-home">Tillbaka till hem</a>
 </body>
 </html>
 
