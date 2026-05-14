@@ -268,15 +268,18 @@ function getBookedTimes($date) {
 
 <body> 
 
-<p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')"> EN/SV</p>
+<header class="site-header">
+    <div class="user-info-container">
+    <p class='user-info'><?php echo htmlspecialchars($_SESSION['username']); ?></p>
+    <a href="index.php" class="back-link" data-i18n="login.back-home">Back to home</a>
+    </div>
+    
+    <div class="site-header-right">
+        <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')">EN/SV</p>
+        <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
+    </div>
+</header>
 
-<img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="logo">
-
-
-<div class="user-info-container">
-<p class='user-info'><?php echo htmlspecialchars($_SESSION['username']); ?></p>
-<a href="index.php" class="back-link" data-i18n="login.back-home" >Back to home</a>
-</div>
 
 <h1 style="text-align:center;">Book an Appointment</h1>
 

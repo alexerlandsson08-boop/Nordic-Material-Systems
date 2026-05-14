@@ -1,21 +1,26 @@
- <?php
-    require_once 'functions.php';
-    if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
+<?php
+require_once 'functions.php';
+
+  if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
+        echo "<header class='site-header'>";
         echo "<div class='user-info-container'>";
         echo "<p class='user-info'>" . htmlspecialchars($_SESSION['username']) . "</p>";
         echo "<a data-i18n='nav.logout' class='logout-button' href='logout.php'>Logout</a>";
         echo "</div>";
+        echo "</header>";
     }
 
     if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === TRUE) {
+        echo "<header class='site-header'>";
+        echo "<nav class='site-nav'>";
         echo "<a href='account-management.php' data-i18n='nav.manage-accounts'>Manage Accounts</a>";
+        echo "</nav>";
+        echo "</header>";
     }
-        
-    ?>
-
-
-
-
+    
+?>
+<!DOCTYPE html>
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,19 +32,21 @@
 
 <body>
     
-
-    <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
-
-    <nav>
+<header class="site-header">
+    <nav class="site-nav">
         <a href="login-form.php" data-i18n="nav.book-appointment">Boka tid</a>
         <a href="products.php" data-i18n="nav.products">Produkter</a>
         <a href="team.html" data-i18n="nav.team">Team</a>
         <a href="contact.php" data-i18n="nav.contact">Kontakt</a>
-        <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')"> EN/SV</p>
     </nav>
+    <div class="site-header-right">
+        <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')">EN/SV</p>
+        <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
+    </div>
+</header>
 
     <div class="image-cover">
-        <img id='Big-picture' src="/images/Image31mars202614_09_39.png" alt="Nordic Material Systems founders">
+        <img id='Big-picture' src="/images/NMScrew.webp" alt="Nordic Material Systems founders">
         <div class="cover-overlay"></div>
         <h1 class='title' data-i18n="title.main">Nordic Material Systems</h1>
         <p class="title" data-i18n="hero.description">Nordic Material Systems är inte en vision om en perfekt framtid – det är en realistisk, genomförbar lösning på ett konkret problem som finns här och nu.</p>

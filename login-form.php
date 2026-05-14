@@ -25,17 +25,19 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
 </head>
 <body>
 
-    <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
-    <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')" data-i18n="nav.language-toggle"> EN/SV</p>
-    
+<header class="site-header">
     <div class="user-info-container">
     <a href="index.php" class="back-link" data-i18n="login.back-home">Back to home</a>
     </div>
+    
+    <div class="site-header-right">
+        <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')">EN/SV</p>
+        <img class="logo" src="/images/Screenshot 2026-04-03 20.27.25 (1).png" alt="NMS, logotype">
+    </div>
+</header>
+
 <main>    
    <h1 data-i18n="login.title">Logga in</h1>
-
-    
-    
 
     <form class ="login-form "action="login.php" method="post" >
         <input type="hidden" name="plan" value="<?php echo htmlspecialchars($selectedPlan); ?>">
