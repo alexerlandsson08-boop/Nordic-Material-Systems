@@ -1,14 +1,17 @@
 <?php
 require_once 'functions.php';
 
+//kontrollera om användaren är inloggad anars skicka till inlogg
 if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== TRUE) {
     header('Location: login-form.php');
     $_SESSION['message'] = "<p data-i18n='login.ms'> Vänligen logga in och testa igen. </p>";
 }
 
+//spara användarnamnet och anslut till databasen
 $username = $_SESSION['username'];
 $db = connectToDb();
 
+//Kontrollera om admin och i såfall hämta ALLA bokningar annars endast användarens
 if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === TRUE) {
     $stmt = $db->prepare("SELECT id, `date-time`, name FROM bookings ORDER BY `date-time` ASC");
     $stmt->execute();
@@ -102,11 +105,11 @@ if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === TRUE) {
         <p data-i18n="mybookings.none">Du har inga bokningar just nu.</p>
     <?php endif; ?>
 </main>
-
 </body>
 </html>
 
 <?php
+//avsluta statement och stäng ner databas-kopplingen
 $stmt->close();
 $db->close();
 ?>

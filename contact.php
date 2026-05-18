@@ -1,6 +1,8 @@
 <?php
 require_once 'functions.php';
 
+//kontrollera om användaren är inloggad anars skicka till inlogg
+
 if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== TRUE) {
     $_SESSION['message'] = "login.ms";
     header('Location: login-form.php');

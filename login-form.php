@@ -1,16 +1,14 @@
 <?php
 require_once('functions.php');
 
+// Variabel som ska innehålla vald plan från formuläret
 $selectedPlan = '';
+// Kontrollerar om formuläret skickats med POST-metoden och om fältet "plan" finns med i formuläret
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['plan'])) {
+
+    // Sparar användarens valda plan i variabeln
     $selectedPlan = $_POST['plan'];
 }
-
-if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
-    header('Location: booking.php');
-    exit();
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -55,13 +53,14 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
     </form>
 
     <?php 
+    //skriv ut meddelande om det finns
     if (isset($_SESSION['message'])) {
-    echo "<p style='color: red;'>" . $_SESSION['message'] . "</p>";
+    echo "<p>" . $_SESSION['message'] . "</p>";
     unset($_SESSION['message']);
     }
     
     if (isset($_SESSION['message-same'])) {
-    echo "<p style='color: red;'>" . $_SESSION['message-same'] . "</p>";
+    echo "<p>" . $_SESSION['message-same'] . "</p>";
     unset($_SESSION['message-same']);
 }
 ?>
@@ -90,9 +89,7 @@ if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
     <button type="submit" data-i18n="register.submit">Registrera konto</button>
 
 </form>
-
 </main>
-
 </body>
 </html>
 

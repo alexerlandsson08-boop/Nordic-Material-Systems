@@ -1,6 +1,7 @@
 <?php
 require_once 'functions.php';
 
+//Om det finns ett boknings id, anslut till databasen och ta bort tiden
 if (isset($_POST['booking_id'])) {
     $bookingId = $_POST['booking_id'];
     $db = connectToDb();
@@ -11,6 +12,7 @@ if (isset($_POST['booking_id'])) {
     $db->close();
 }
 
+//skicka lyckas meddelande till användaren
 $_SESSION['message'] = "<p data-i18n='time.delete'>Tiden har blivit avbokad</p>";
 
 header("Location: choises.php");

@@ -1,16 +1,17 @@
 <?php
 require_once 'functions.php';
 
-// Kontrollera login
+// Kontrollera login annars skicka till inlogg
 if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== TRUE) {
     header("Location: login-form.php");
     exit();
 }
 
+//Spara vald plan och användare
 $selectedPlan = $_POST['plan'];
 $username = $_SESSION['username'];
 
-
+//anslut till databas och uppdatera plan fältet till det nya, gå sedan boknings kalendern
 $db = connectToDb();
 
 

@@ -1,13 +1,15 @@
 <?php
 session_start();
 
+//Behövs för .env att fungera
+require_once __DIR__ . '/vendor/autoload.php';
 
-/**
- * Establishes a connection to the MySQL database using credentials from environment variables.
- * @return mysqli The database connection object
- */
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+//Anslutningen till databasen
 function connectToDb() {
-    $db = new mysqli('ostrawebb.se', 'wsp2526_aleerl', 'sabebimu77', 'wsp2526_aleerl');   
+    $db = new mysqli('ostrawebb.se',$_ENV['DB_USER'] , $_ENV['DB_PASS'], $_ENV['DB_USER']);   
     return $db;
 }
 

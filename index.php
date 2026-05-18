@@ -1,6 +1,7 @@
 <?php
 require_once 'functions.php';
 
+    //kontrollera om användaren är inloggad och visa i såfall kontot samt utlogg knapp
   if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === TRUE) {
         echo "<header class='site-header'>";
         echo "<div class='user-info-container'>";
@@ -10,6 +11,7 @@ require_once 'functions.php';
         echo "</header>";
     }
 
+    //Kontrollera om användaren är admin och visa i så fall Manage accounts
     if(isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] === TRUE) {
         echo "<header class='site-header'>";
         echo "<nav class='site-nav'>";
@@ -18,10 +20,6 @@ require_once 'functions.php';
         echo "</header>";
     }
     
-    if(isset($_SESSION['message'])) {
-        $message = $_SESSION['message'];
-        unset($_SESSION['message']);
-    } 
 ?>
 <!DOCTYPE html>
 <html lang="sv">
@@ -30,7 +28,7 @@ require_once 'functions.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/main.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/images/logga.webp">
-    <title>Kontakta-Nordic Material Systems</title>
+    <title>Nordic Material Systems</title>
     <script src="translations.js"></script>
 </head>
 <body>

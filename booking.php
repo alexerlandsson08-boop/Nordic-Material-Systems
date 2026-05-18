@@ -205,7 +205,7 @@ function getBookedTimes($date) {
 </head>
 
 <body>
-
+    
 <header class="site-header">
     <div class="user-info-container">
         <p class="user-info"><?php echo htmlspecialchars($_SESSION['username']); ?></p>

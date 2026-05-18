@@ -1,6 +1,8 @@
 <?php
 require_once 'functions.php';
 
+//anslut till databasen och hämta alla användare
+
 $db = connectToDb();
 
 $statement = $db->prepare("SELECT Cname FROM company_logins WHERE User_type != 'admin'");
@@ -9,7 +11,7 @@ $statement->execute();
 
 $result = $statement->get_result();
 
-
+//Bygg och tabell och visa alla användare samt borttagningsknapp
 echo "<table class='account-table'>";
 echo "<tr><th>Company users</th></tr>";
 
@@ -25,6 +27,8 @@ echo "</table>";
 
 $statement->close();
 $db->close();
+
+//Om ett meddelande finns, visa det
 
 if (isset($_SESSION['message'])) {
     echo "<p class='message'>" . "<strong>" . htmlspecialchars($_SESSION['message']) . "</strong>" . "</p>";

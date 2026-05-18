@@ -1,9 +1,9 @@
 <?php
 require_once('functions.php');
 
-$db = connectToDb();
 
-/* Hämta datan från formuläret */
+
+// Hämta datan från formuläret
 
 $username = $_POST['name'];
 $password = $_POST['password'];
@@ -11,7 +11,7 @@ $passwordVari = $_POST['password-verify'];
 $email = $_POST['email'];
 
 
-/* Kontrollera att lösenord är sama */
+// Kontrollera att lösenord är sama 
 
 if($password !== $passwordVari){
 
@@ -22,15 +22,15 @@ exit();
 }
 
 
-/* Kontrollera om användarnamn redan finns */
-
+//Anslut till databasen kolla om användare redan finns
+$db = connectToDb();
 $check = $db->prepare("SELECT id FROM company_logins WHERE Cname = ?");
 $check->bind_param("s",$username);
 $check->execute();
 $result = $check->get_result();
 
-if($result->num_rows > 0){
 
+if($result->num_rows > 0){
 $_SESSION['message-same'] = "Användarnamnet är redan taget";
 header("Location:login-form.php");
 exit();
@@ -38,12 +38,12 @@ exit();
 }
 
 
-/* Hasha lösenord */
+//Hasha lösenordet
 
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
 
-/* Spara användare */
+//Spara användaren
 
 $statement = $db->prepare(
 "INSERT INTO company_logins (Cname,password,email,Sub_plan, User_type)
@@ -60,7 +60,7 @@ $email
 $statement->execute();
 
 
-/* Skicka tillbaka meddelande med användaren */
+//Skicka meddelande om att kontot skapats och gå tillbaka till inloggen
 
 $_SESSION['message'] = "Kontot skapades!";
 
