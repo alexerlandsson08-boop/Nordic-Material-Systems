@@ -3,13 +3,14 @@ require_once 'functions.php';
 
 if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== TRUE) {
     header('Location: login-form.php');
+    $_SESSION['message'] = "<p data-i18n='login.ms'> Vänligen logga in och testa igen. </p>";
 }
 
 if (isset($_SESSION['selectedPlan'])) {
     echo "Du har redan ett aktiv prenumerationsplan. Om du vill ändra din prenumeration, vänligen välj ny plan nedan. <br> Vald plan: <strong>" . htmlspecialchars($_SESSION['selectedPlan'])  . "</strong>";
 }
-
 ?>
+
 <html lang="sv">
 <head>
     <meta charset="UTF-8">

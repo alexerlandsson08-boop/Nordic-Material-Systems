@@ -24,5 +24,5 @@ $stmt->close();
 $db->close();
 
 
-header('Location: index.php');
+header('Location: booking.php');
 ?>

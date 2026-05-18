@@ -1,46 +1,47 @@
 <?php
 require_once 'functions.php';
 
-// Tider som går att boka från start
 $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
 
-// Hämta månad och år
 $month = isset($_GET['month']) ? (int)$_GET['month'] : date('n');
 $year  = isset($_GET['year'])  ? (int)$_GET['year']  : date('Y');
 
-$message = "";
+$messageKey  = "";
+$messageType = "";
+$date        = "";
+$time        = "";
 
-// Hantera bokning
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_date'])) {
 
     $date = $_POST['book_date'];
     $time = $_POST['book_time'];
 
     if ($time == "") {
-        $message = "<div class='error'>Please select a time.</div>";
+        $messageKey  = "booking.select-time";
+        $messageType = "error";
     } else {
         $dateTime = $date . " " . $time;
 
         if (bookDate($dateTime, $_SESSION['username'], $_SESSION['email'])) {
-            $message = "<div class='success'>Booking confirmed!</div>";
+            $messageKey  = "booking.confirmation";
+            $messageType = "success";
         } else {
-            $message = "<div class='error'>Time already booked. Try another.</div>";
+            $messageKey  = "booking.taken";
+            $messageType = "error";
         }
     }
 }
 
-// Bygg kalender
 function build_calendar($month, $year) {
 
     $daysOfWeek = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-    $firstDay = mktime(0,0,0,$month,1,$year);
+    $firstDay   = mktime(0,0,0,$month,1,$year);
     $numberDays = date('t',$firstDay);
-    $startDay = date('w',$firstDay);
+    $startDay   = date('w',$firstDay);
+    $today      = date('Y-m-d');
 
-    $today = date('Y-m-d');
-
-    $calendar = "<table class='calendar'>";
+    $calendar  = "<table class='calendar'>";
     $calendar .= "<caption>" . date('F Y', $firstDay) . "</caption>";
     $calendar .= "<tr>";
 
@@ -50,15 +51,13 @@ function build_calendar($month, $year) {
 
     $calendar .= "</tr><tr>";
 
-    // tomma rutor
     for ($i = 0; $i < $startDay; $i++) {
         $calendar .= "<td class='empty'></td>";
     }
 
-    // dagar
     for ($day = 1; $day <= $numberDays; $day++) {
 
-        $date = sprintf('%04d-%02d-%02d', $year, $month, $day);
+        $date    = sprintf('%04d-%02d-%02d', $year, $month, $day);
         $classes = [];
 
         if ($date == $today) {
@@ -71,7 +70,6 @@ function build_calendar($month, $year) {
 
         $class = implode(" ", $classes);
 
-        // klickbara datum
         if (!in_array("past", $classes)) {
             $calendar .= "<td class='$class'>
                 <a class='book-link' href='?month=$month&year=$year&book=$date'>$day</a>
@@ -90,11 +88,10 @@ function build_calendar($month, $year) {
     return $calendar;
 }
 
-// navigering mellan månader
 $prevMonth = $month - 1;
 $nextMonth = $month + 1;
-$prevYear = $year;
-$nextYear = $year;
+$prevYear  = $year;
+$nextYear  = $year;
 
 if ($month == 1) {
     $prevMonth = 12;
@@ -106,27 +103,24 @@ if ($month == 12) {
     $nextYear++;
 }
 
-
-//Boka in daumn och tid
 function bookDate($date, $name, $email, $userId = null) {
     $db = connectToDb();
-    
-    // Kolla om tid redan är bokad
+
     $checkStmt = $db->prepare('SELECT COUNT(*) as count FROM bookings WHERE `date-time` = ?');
     $checkStmt->bind_param('s', $date);
     $checkStmt->execute();
     $result = $checkStmt->get_result();
-    $row = $result->fetch_assoc();
+    $row    = $result->fetch_assoc();
     $checkStmt->close();
-    
-    // Returnera false om tiden redan är bokad
+
     if ($row['count'] > 0) {
         $db->close();
         return false;
     }
-    
-    $dateTime = date('Y-m-d H:i:s', strtotime($date));
-    $useUserId = false;
+
+    $dateTime   = date('Y-m-d H:i:s', strtotime($date));
+    $useUserId  = false;
+
     if ($userId !== null) {
         $columnCheck = $db->query("SHOW COLUMNS FROM bookings LIKE 'user_id'");
         if ($columnCheck && $columnCheck->num_rows > 0) {
@@ -141,38 +135,33 @@ function bookDate($date, $name, $email, $userId = null) {
         $stmt = $db->prepare('INSERT INTO bookings (`date-time`, name, email) VALUES (?, ?, ?)');
         $stmt->bind_param('sss', $dateTime, $name, $email);
     }
+
     $ok = $stmt->execute();
     $stmt->close();
     $db->close();
     return $ok;
 }
 
-//visa endast lediga tider
 function getBookedTimes($date) {
-    $db = connectToDb();
-    // Ta ut exakt datum
-    $dateOnly = date('Y-m-d', strtotime($date));
+    $db         = connectToDb();
+    $dateOnly   = date('Y-m-d', strtotime($date));
     $startOfDay = $dateOnly . ' 00:00:00';
-    $endOfDay = $dateOnly . ' 23:59:59';
-    
-    // Kolla alla bokningar för det datumet
+    $endOfDay   = $dateOnly . ' 23:59:59';
+
     $stmt = $db->prepare('SELECT `date-time` FROM bookings WHERE `date-time` BETWEEN ? AND ?');
     $stmt->bind_param('ss', $startOfDay, $endOfDay);
     $stmt->execute();
     $result = $stmt->get_result();
-    
-    // Hämta alla bokade tider"
+
     $bookedTimes = [];
     while ($row = $result->fetch_assoc()) {
-        $time = date('H:i', strtotime($row['date-time']));
-        $bookedTimes[] = $time;
+        $bookedTimes[] = date('H:i', strtotime($row['date-time']));
     }
-    
+
     $stmt->close();
     $db->close();
     return $bookedTimes;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -184,75 +173,71 @@ function getBookedTimes($date) {
     <script src="translations.js"></script>
 </head>
 
-<body> 
+<body>
 
 <header class="site-header">
     <div class="user-info-container">
-    <p class='user-info'><?php echo htmlspecialchars($_SESSION['username']); ?></p>
-    <a href="index.php" class="back-link" data-i18n="login.back-home">Tillbaka till hem</a>
+        <p class="user-info"><?php echo htmlspecialchars($_SESSION['username']); ?></p>
+        <a href="index.php" class="back-link" data-i18n="login.back-home">Tillbaka till hem</a>
     </div>
-    
+
     <div class="site-header-right">
         <p id="lang-toggle" onclick="setLanguage(currentLang === 'sv' ? 'en' : 'sv')">EN/SV</p>
         <img class="logo" src="/images/logga.webp" alt="NMS, logotype">
     </div>
 </header>
 
-
 <h1 data-i18n="booking.title" style="text-align:center;">Boka ett möte</h1>
 
-
 <div class="message">
-    <?php echo $message; ?>
+    <?php if (!empty($messageKey)): ?>
+        <div class="<?php echo $messageType; ?>"
+             data-i18n="<?php echo $messageKey; ?>"
+             <?php if ($messageKey === 'booking.confirmation'): ?>
+                 data-date="<?php echo $date; ?>"
+                 data-time="<?php echo $time; ?>"
+             <?php endif; ?>>
+            <?php echo $messageKey; ?>
+        </div>
+    <?php endif; ?>
 </div>
 
-<!-- NAVIGATION -->
 <div class="navigation">
-    <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear; ?>">Tidigare</a>
-    <a href="?month=<?php echo date('n'); ?>&year=<?php echo date('Y'); ?>">Idag</a>
-    <a href="?month=<?php echo $nextMonth; ?>&year=<?php echo $nextYear; ?>">Nästa</a>
+    <a href="?month=<?php echo $prevMonth; ?>&year=<?php echo $prevYear; ?>" data-i18n="booking.nav.prev">Tidigare</a>
+    <a href="?month=<?php echo date('n'); ?>&year=<?php echo date('Y'); ?>" data-i18n="booking.nav.today">Idag</a>
+    <a href="?month=<?php echo $nextMonth; ?>&year=<?php echo $nextYear; ?>" data-i18n="booking.nav.next">Nästa</a>
 </div>
 
-<!-- BOOKING FORM -->
+<?php if (isset($_GET['book'])): ?>
 <?php
-if (isset($_GET['book'])) {
-
     $selectedDate = $_GET['book'];
-    $bookedTimes = getBookedTimes($selectedDate);
+    $bookedTimes  = getBookedTimes($selectedDate);
 ?>
-
 <div class="booking-form">
-    <h3>Book for <?php echo $selectedDate; ?></h3>
+    <h3 data-i18n="booking.form.title" data-date="<?php echo $selectedDate; ?>">Boka för <?php echo $selectedDate; ?></h3>
 
     <?php if (count($bookedTimes) < count($allTimes)): ?>
-
     <form method="post">
         <input type="hidden" name="book_date" value="<?php echo $selectedDate; ?>">
 
         <select name="book_time">
-            <option value="">Välj tid</option>
-
-            <?php
-            foreach ($allTimes as $time) {
-                if (!in_array($time, $bookedTimes)) {
-                    echo "<option value='$time'>$time</option>";
-                }
-            }
-            ?>
+            <option value="" data-i18n="booking.form.select">Välj tid</option>
+            <?php foreach ($allTimes as $time): ?>
+                <?php if (!in_array($time, $bookedTimes)): ?>
+                    <option value="<?php echo $time; ?>"><?php echo $time; ?></option>
+                <?php endif; ?>
+            <?php endforeach; ?>
         </select>
 
-        <button type="submit">Boka nu</button>
+        <button type="submit" data-i18n="booking.form.button">Boka nu</button>
     </form>
 
     <?php else: ?>
-        <p class="error">All times are booked.</p>
+        <p class="error" data-i18n="booking.no-times">Alla tider är bokade.</p>
     <?php endif; ?>
-
 </div>
+<?php endif; ?>
 
-<?php } ?>
-
-<!-- KALENDER -->
 <?php echo build_calendar($month, $year); ?>
 
 </body>

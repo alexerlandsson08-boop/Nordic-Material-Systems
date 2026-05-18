@@ -23,24 +23,23 @@ require_once 'functions.php';
         unset($_SESSION['message']);
     } 
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/main.css" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/images/logga.webp">
-    <title>Nordic Material systems</title>
+    <title>Kontakta-Nordic Material Systems</title>
     <script src="translations.js"></script>
 </head>
-
 <body>
     
 <header class="site-header">
     <nav class="site-nav">
-        <a href="login-form.php" data-i18n="nav.book-appointment">Boka tid</a>
+        <a href="products.php" data-i18n="nav.book-appointment">Boka tid</a>
+        <a href="choises.php" data-i18n="nav.team">Mina bokningar</a>
         <a href="products.php" data-i18n="nav.products">Produkter</a>
-        <a href="#" data-i18n="nav.team">Team</a>
         <a href="contact.php" data-i18n="nav.contact">Kontakt</a>
     </nav>
     <div class="site-header-right">

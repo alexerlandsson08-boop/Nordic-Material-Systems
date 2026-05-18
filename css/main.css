@@ -559,7 +559,7 @@ input, textarea.contact {
 }
 
 .contact [type="submit"] {
-    color: #fff;
+    color: rgb(255, 255, 255);
     border: none;
     padding: 12px 22px;
     border-radius: 6px;

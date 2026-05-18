@@ -7,7 +7,7 @@ $db = connectToDb();
 
 $username = $_POST['name'];
 $password = $_POST['password'];
-$passwordVari = $_POST['password-vari'];
+$passwordVari = $_POST['password-verify'];
 $email = $_POST['email'];
 
 

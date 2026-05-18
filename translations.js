@@ -1,25 +1,31 @@
-
-// translations.js
 const translations = {
     en: {
         "nav.book-appointment": "Book appointment",
         "nav.products": "Products",
-        "nav.team": "Team",
+        "nav.team": "My appointments",
         "nav.contact": "Contact",
+        "nav.logout": "Log out",
+        "nav.manage-accounts": "Manage accounts",
+
+        "title.booking": "Book an appointment",
         "title.main": "Nordic Material Systems",
         "hero.description": "Nordic Material Systems is not a vision of a perfect future – it is a realistic, feasible solution to a concrete problem that exists here and now.",
         "about.title": "What actually happens to all the clothes when we no longer use them?",
         "about.description": "Nordic Material Systems offers circular and sustainable textile solutions for companies by recycling and refining textiles. The company is based on purchasing and refining leftover textiles from companies. These textiles are restored, processed and converted into new yarn and new, fresh textile products of high quality. The company works with subscription-based collaborations where companies pay an ongoing fee to have their textiles handled in a sustainable way. Through the subscription, continuous collection, recycling and reuse of the material is ensured, which reduces waste and climate impact while utilizing the companies' resources. The recycled materials are sold on as yarn or finished textiles to companies in fashion, interior design and other textile-related industries. NMS thus creates value both economically and environmentally by extending the life cycle of textiles and contributing to a more circular textile industry in Sweden.",
         "about.description2": "Our innovation, Nordic Material Systems, is a circular system that focuses on what can actually be recycled efficiently: sorted monomaterials such as 100 percent cotton, 100 percent wool and other pure cellulose fibers. Instead of trying to solve the entire textile problem, we focus on the part that is feasible and profitable. Through subscription-based collection from companies, we collect their leftover or discarded monomaterials, quality assure them and mechanically process them into new fiber and new yarn. The recycled material is then sent back to the companies as a high-quality circular raw material.",
+
         "login.back-home": "Back to Home",
         "login.title": "Login",
         "login.company-name": "Company name",
         "login.password": "Password",
         "login.submit": "Log in",
+        "login.ms": "Please login and try again",
+
         "register.title": "Create account",
         "register.verify-password": "Verify password",
         "register.email": "Email",
         "register.submit": "Register account",
+
         "products.title": "Our subscription options",
         "products.back-home": "Back to Home",
         "products.basic.title": "Basic",
@@ -54,38 +60,63 @@ const translations = {
         "products.table.report": "Sustainability report",
         "products.table.consulting": "Consulting",
         "products.table.extra-benefit": "Extra benefit",
-        "Booking.title": "Book an appointment",
-        "Booking.book-for": "Book for",
-        "Booking.choose-time": "Choose time",
-        "Booking.book-now": "Book Now",
-        "Booking.legend": "Green background = Today | Yellow background = Some times available | Red background = Fully booked | Gray = Past dates",
-        "Booking.click-date": "Click on available dates to book an appointment.",
-        "nav.logout": "Logga ut",
-        "nav.manage-accounts": "Manage accounts",
-        "booking.title": "Book an appointment",
-        
 
+        "booking.title": "Book an appointment",
+        "booking.select-time": "Please select a time.",
+        "booking.confirmation": "Booking registered for {date} at {time}!",
+        "booking.taken": "Time already booked. Try another.",
+        "booking.no-times": "All times are booked.",
+        "booking.nav.prev": "Previous",
+        "booking.nav.today": "Today",
+        "booking.nav.next": "Next",
+        "booking.form.title": "Book for {date}",
+        "booking.form.select": "Select time",
+        "booking.form.button": "Book now",
+
+        "mybookings.title": "My bookings",
+        "mybookings.welcome": "Welcome to your booking overview!",
+        "mybookings.count": "You currently have <strong>{count}</strong> bookings.",
+        "mybookings.table.datetime": "Date & Time",
+        "mybookings.table.manage": "Manage",
+        "mybookings.cancel": "Cancel booking",
+        "mybookings.none": "You have no bookings at the moment.",
+        "time.delete": "Time has been deleted",
+
+        "contact.title": "Contact",
+        "contact.label.title": "Title",
+        "contact.label.content": "Content",
+        "contact.label.submit": "Send",
+        "contact.placeholder.title": "Title",
+        "contact.placeholder.content": "Write...",
+        "contact.submit": "Send"
     },
-    
+
     sv: {
         "nav.book-appointment": "Boka tid",
         "nav.products": "Produkter",
-        "nav.team": "Team",
+        "nav.team": "Mina bokningar",
         "nav.contact": "Kontakt",
+        "nav.logout": "Logga ut",
+        "nav.manage-accounts": "Hantera konton",
+
         "title.main": "Nordic Material Systems",
         "hero.description": "Nordic Material Systems är inte en vision om en perfekt framtid – det är en realistisk, genomförbar lösning på ett konkret problem som finns här och nu.",
         "about.title": "Vad händer egentligen med alla kläder när vi inte längre använder dem?",
         "about.description": "Nordic Material Systems erbjuder cirkulära och hållbara textillösningar för företag genom att återvinna och förädla textilier. Företaget bygger på att köpa in och förädla överblivna textilier från företag. Dessa textilier återställs, bearbetas och omvandlas till nytt garn och nya, fräscha textilprodukter av hög kvalitet.Företaget arbetar med abonnemangsbaserade samarbeten där företag betalar en löpande avgift för att få sina textilier omhändertagna på ett hållbart sätt. Genom abonnemanget säkerställs en kontinuerlig insamling, återvinning och återanvändning av materialet, vilket minskar avfall och klimatpåverkan samtidigt som företagens resurser tas tillvara.De återvunna materialen säljs vidare som garn eller färdiga textilier till företag inom mode, inredning och andra textilrelaterade branscher. NMS skapar därmed värde både ekonomiskt och miljömässigt genom att förlänga textiliers livscykel och bidra till en mer cirkulär textilindustri i Sverige.",
         "about.description2": "Vår innovation, Nordic Material Systems, är ett cirkulärt system som fokuserar på det som faktiskt går att återvinna effektivt: sorterade monomaterial som 100 procent bomull, 100 procent ull och andra rena cellulosafibrer. Istället för att försöka lösa hela textilproblemet, fokuserar vi på den del som är genomförbar och lönsam. Genom abonnemangsbaserad insamling från företag samlar vi in deras överblivna eller kasserade monomaterial, kvalitetssäkrar dem och bearbetar dem mekaniskt till ny fiber och nytt garn. Det återvunna materialet skickas sedan tillbaka till företagen som en cirkulär råvara av hög kvalitet.",
+
         "login.back-home": "Tillbaka till hem",
         "login.title": "Logga in",
         "login.company-name": "Företagsnamn",
         "login.password": "Lösenord",
         "login.submit": "Logga in",
+        "login.ms": "Vänligen logga in och testa igen",
+    
         "register.title": "Skapa konto",
         "register.verify-password": "Verifiera lösenord",
         "register.email": "E-post",
         "register.submit": "Registrera konto",
+
         "products.title": "Våra prenumerationsalternativ",
         "products.back-home": "Tillbaka till hem",
         "products.basic.title": "Basic",
@@ -120,16 +151,35 @@ const translations = {
         "products.table.report": "Hållbarhetsrapport",
         "products.table.consulting": "Rådgivning",
         "products.table.extra-benefit": "Extra förmån",
-        "Booking.title": "Boka tid",
-        "Booking.book-for": "Boka för",
-        "Booking.choose-time": "Välj tid",
-        "Booking.book-now": "Boka nu",
-        "Booking.legend": "Grön bakgrund = Idag | Gul bakgrund = Några tider tillgängliga | Röd bakgrund = Fullbokat | Grå = Gånger som passerat",
-        "Booking.click-date": "Klicka på tillgängliga datum för att boka en tid.",
-        "nav.logout": "Logga ut", 
-        "nav.manage-accounts": "Hantera konton",
-        "booking.title": "Boka en tid",
-        
+
+        "booking.title": "Boka ett möte",
+        "booking.select-time": "Vänligen välj en tid.",
+        "booking.confirmation": "Bokning registrerad för {date} kl {time}!",
+        "booking.taken": "Tiden är redan bokad. Försök med en annan.",
+        "booking.no-times": "Alla tider är bokade.",
+        "booking.nav.prev": "Tidigare",
+        "booking.nav.today": "Idag",
+        "booking.nav.next": "Nästa",
+        "booking.form.title": "Boka för {date}",
+        "booking.form.select": "Välj tid",
+        "booking.form.button": "Boka nu",
+
+        "mybookings.title": "Mina bokningar",
+        "mybookings.welcome": "Välkommen till din bokningsöversikt!",
+        "mybookings.count": "Du har just nu <strong>{count}</strong> bokningar.",
+        "mybookings.table.datetime": "Datum & Tid",
+        "mybookings.table.manage": "Hantera",
+        "mybookings.cancel": "Avboka",
+        "mybookings.none": "Du har inga bokningar just nu.",
+        "time.delete": "Tiden har avbokats",
+
+        "contact.title": "Kontakta",
+        "contact.label.title": "Rubrik",
+        "contact.label.content": "Innehåll",
+        "contact.label.submit": "Skicka",
+        "contact.placeholder.title": "Rubrik",
+        "contact.placeholder.content": "Skriv...",
+        "contact.submit": "Skicka"
     }
 };
 
@@ -142,26 +192,47 @@ function setLanguage(lang) {
 }
 
 function updateTexts() {
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+
+        const key = el.getAttribute('data-i18n');
+
         if (translations[currentLang] && translations[currentLang][key]) {
-            element.textContent = translations[currentLang][key];
+
+            let text = translations[currentLang][key];
+
+            if (el.dataset.date)  text = text.replace('{date}', el.dataset.date);
+            if (el.dataset.time)  text = text.replace('{time}', el.dataset.time);
+            if (el.dataset.count) text = text.replace('{count}', el.dataset.count);
+
+            el.innerHTML = text;
         }
     });
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-        const key = element.getAttribute('data-i18n-placeholder');
-        if (translations[currentLang] && translations[currentLang][key]) {
-            element.placeholder = translations[currentLang][key];
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+
+        const key = el.getAttribute('data-i18n-placeholder');
+
+        if (translations[currentLang][key]) {
+            el.placeholder = translations[currentLang][key];
         }
     });
-    // Update document lang attribute
+
+    document.querySelectorAll('[data-i18n-value]').forEach(el => {
+
+        const key = el.getAttribute('data-i18n-value');
+
+        if (translations[currentLang][key]) {
+            el.value = translations[currentLang][key];
+        }
+    });
+
     document.documentElement.lang = currentLang;
-    // Update button text
-    const toggleBtn = document.getElementById('lang-toggle');
-    if (toggleBtn) {
-        toggleBtn.textContent = currentLang === 'sv' ? '🌎 EN' : '🌎 SV';
-    }
+
+    const toggle = document.getElementById('lang-toggle');
+    if (toggle) toggle.textContent = currentLang === 'sv' ? '🌎 EN' : '🌎 SV';
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', updateTexts);
+
+window.setLanguage = setLanguage;

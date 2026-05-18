@@ -10,4 +10,5 @@ function connectToDb() {
     $db = new mysqli('ostrawebb.se', 'wsp2526_aleerl', 'sabebimu77', 'wsp2526_aleerl');   
     return $db;
 }
+
 ?>
