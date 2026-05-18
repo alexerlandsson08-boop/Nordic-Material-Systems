@@ -1,27 +1,35 @@
 <?php
 require_once 'functions.php';
 
+//Alla bokbara tider
 $allTimes = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00'];
 
+//hämta månad/år från url, annars använd nuvarande
 $month = isset($_GET['month']) ? (int)$_GET['month'] : date('n');
 $year  = isset($_GET['year'])  ? (int)$_GET['year']  : date('Y');
 
+//Skapa variabler för meddelenden och vald datum/tid
 $messageKey  = "";
 $messageType = "";
 $date        = "";
 $time        = "";
 
+
+//kontrollera att information skickats med POST och att book_date finns
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_date'])) {
 
+    //hämtar valt datum och tid
     $date = $_POST['book_date'];
     $time = $_POST['book_time'];
 
+    //Om ingen tid finns, skicka fel meddelande annars sätt ihop datum och tid till datetime
     if ($time == "") {
         $messageKey  = "booking.select-time";
         $messageType = "error";
     } else {
         $dateTime = $date . " " . $time;
 
+        //om det finns datum/tid, användarnamn och email-->skicka lyckas. om tid tagen, skicka fel
         if (bookDate($dateTime, $_SESSION['username'], $_SESSION['email'])) {
             $messageKey  = "booking.confirmation";
             $messageType = "success";
@@ -32,67 +40,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_date'])) {
     }
 }
 
+//Bygg kalendern
+
 function build_calendar($month, $year) {
 
     $daysOfWeek = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
+    //skapa timestamp för första dagen. Hämta antal dagar, vilken veckodag som är först och dagens datum
     $firstDay   = mktime(0,0,0,$month,1,$year);
     $numberDays = date('t',$firstDay);
     $startDay   = date('w',$firstDay);
     $today      = date('Y-m-d');
 
+    //Börja bygg kalendern
     $calendar  = "<table class='calendar'>";
     $calendar .= "<caption>" . date('F Y', $firstDay) . "</caption>";
     $calendar .= "<tr>";
 
+   //Skriv ut dagarna
     foreach ($daysOfWeek as $day) {
         $calendar .= "<th>$day</th>";
     }
 
     $calendar .= "</tr><tr>";
 
+    //Lägger till toma rutor innan första dagen
     for ($i = 0; $i < $startDay; $i++) {
         $calendar .= "<td class='empty'></td>";
     }
 
+    //Loopa genom alla dagar i månaden
     for ($day = 1; $day <= $numberDays; $day++) {
 
+        //Ställ in formatet YYYY-MM-DD
         $date    = sprintf('%04d-%02d-%02d', $year, $month, $day);
+        //Array för CSS klasser
         $classes = [];
 
+        //Om det är idag
         if ($date == $today) {
             $classes[] = "today";
         }
 
+        //Om det har varit
         if (strtotime($date) < strtotime($today)) {
             $classes[] = "past";
         }
 
+        //Gör om array till vanlig string
         $class = implode(" ", $classes);
 
+        //Om datumet inte har varit
         if (!in_array("past", $classes)) {
+            //Gör det klickbart
             $calendar .= "<td class='$class'>
                 <a class='book-link' href='?month=$month&year=$year&book=$date'>$day</a>
             </td>";
         } else {
+            //Gör att gamla datum ej är klickbara
             $calendar .= "<td class='$class'>$day</td>";
         }
 
+        //Bygg ny rad efter varje vecka
         if (($day + $startDay) % 7 == 0) {
             $calendar .= "</tr><tr>";
         }
     }
 
+    //Avsluta tabell och returnera färdig kalender
     $calendar .= "</tr></table>";
-
     return $calendar;
 }
 
+//Månaden innan, efter och standard år
 $prevMonth = $month - 1;
 $nextMonth = $month + 1;
 $prevYear  = $year;
 $nextYear  = $year;
 
+//Om januari föregående december och tvärtom
 if ($month == 1) {
     $prevMonth = 12;
     $prevYear--;
@@ -103,6 +129,7 @@ if ($month == 12) {
     $nextYear++;
 }
 
+//Boka tiden i databasen
 function bookDate($date, $name, $email, $userId = null) {
     $db = connectToDb();
 
@@ -113,12 +140,15 @@ function bookDate($date, $name, $email, $userId = null) {
     $row    = $result->fetch_assoc();
     $checkStmt->close();
 
+    //Om count > 0 så är tiden bokad och returnerar false
     if ($row['count'] > 0) {
         $db->close();
         return false;
     }
 
+    //Gör om till rätt format
     $dateTime   = date('Y-m-d H:i:s', strtotime($date));
+    //Kontrollerar om Userid finns och bokar utan om det behövs. Eftersom att det krävs inlogg för att nå denna sida behövs det egentligen inte
     $useUserId  = false;
 
     if ($userId !== null) {
@@ -142,6 +172,7 @@ function bookDate($date, $name, $email, $userId = null) {
     return $ok;
 }
 
+//Hämta alla bokade tider för ett visst datum
 function getBookedTimes($date) {
     $db         = connectToDb();
     $dateOnly   = date('Y-m-d', strtotime($date));
